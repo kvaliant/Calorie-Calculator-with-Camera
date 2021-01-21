@@ -4,7 +4,7 @@ class MealsListData {
     this.titleTxt = '',
     this.startColor = '',
     this.endColor = '',
-    this.meals,
+    this.timeStamp,
     this.kacl = 0,
   });
 
@@ -12,39 +12,39 @@ class MealsListData {
   String titleTxt;
   String startColor;
   String endColor;
-  List<String> meals;
+  DateTime timeStamp;
   int kacl;
 
   static List<MealsListData> tabIconsList = <MealsListData>[
     MealsListData(
       imagePath: 'assets/fitness_app/breakfast.png',
-      titleTxt: 'Breakfast',
+      titleTxt: 'Rice',
       kacl: 525,
-      meals: <String>['Bread,', 'Peanut butter,', 'Apple'],
+      timeStamp: DateTime.parse("2021-05-15 08:18:04Z"),
       startColor: '#FA7D82',
       endColor: '#FFB295',
     ),
     MealsListData(
       imagePath: 'assets/fitness_app/lunch.png',
-      titleTxt: 'Lunch',
+      titleTxt: 'Fried Chicken',
       kacl: 602,
-      meals: <String>['Salmon,', 'Mixed veggies,', 'Avocado'],
+      timeStamp: DateTime.parse("2021-05-15 08:18:04Z"),
       startColor: '#738AE6',
       endColor: '#5C5EDD',
     ),
     MealsListData(
       imagePath: 'assets/fitness_app/snack.png',
-      titleTxt: 'Snack',
-      kacl: 0,
-      meals: <String>['Recommend:', '800 kcal'],
+      titleTxt: 'Spaghetti',
+      kacl: 525,
+      timeStamp: DateTime.parse("2021-05-15 08:18:04Z"),
       startColor: '#FE95B6',
       endColor: '#FF5287',
     ),
     MealsListData(
       imagePath: 'assets/fitness_app/dinner.png',
-      titleTxt: 'Dinner',
-      kacl: 0,
-      meals: <String>['Recommend:', '703 kcal'],
+      titleTxt: 'Hamburger',
+      kacl: 500,
+      timeStamp: DateTime.parse("2021-05-15 08:18:04Z"),
       startColor: '#6F72CA',
       endColor: '#1E1466',
     ),
