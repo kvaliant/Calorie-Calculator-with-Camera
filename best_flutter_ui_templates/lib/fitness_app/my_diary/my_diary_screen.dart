@@ -1,10 +1,10 @@
-import 'package:best_flutter_ui_templates/fitness_app/ui_view/body_measurement.dart';
-import 'package:best_flutter_ui_templates/fitness_app/ui_view/glass_view.dart';
+//import 'package:best_flutter_ui_templates/fitness_app/ui_view/body_measurement.dart';
+//import 'package:best_flutter_ui_templates/fitness_app/ui_view/glass_view.dart';
 import 'package:best_flutter_ui_templates/fitness_app/ui_view/mediterranesn_diet_view.dart';
 import 'package:best_flutter_ui_templates/fitness_app/ui_view/title_view.dart';
 import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
 import 'package:best_flutter_ui_templates/fitness_app/my_diary/meals_list_view.dart';
-import 'package:best_flutter_ui_templates/fitness_app/my_diary/water_view.dart';
+//import 'package:best_flutter_ui_templates/fitness_app/my_diary/water_view.dart';
 import 'package:flutter/material.dart';
 
 class MyDiaryScreen extends StatefulWidget {
@@ -58,7 +58,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
 
   void addAllListData() {
     const int count = 9;
-
+    /*
     listViews.add(
       TitleView(
         titleTxt: 'Mediterranean diet',
@@ -70,6 +70,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
         animationController: widget.animationController,
       ),
     );
+    */
     listViews.add(
       MediterranesnDietView(
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
@@ -82,7 +83,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
     listViews.add(
       TitleView(
         titleTxt: 'Meals today',
-        subTxt: 'Customize',
+        subTxt: 'Details',
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
             parent: widget.animationController,
             curve:
@@ -101,7 +102,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
         mainScreenAnimationController: widget.animationController,
       ),
     );
-
+    /*
     listViews.add(
       TitleView(
         titleTxt: 'Body measurement',
@@ -123,6 +124,8 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
         animationController: widget.animationController,
       ),
     );
+    */
+    /*
     listViews.add(
       TitleView(
         titleTxt: 'Water',
@@ -154,6 +157,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
                       curve: Curves.fastOutSlowIn))),
           animationController: widget.animationController),
     );
+    */
   }
 
   Future<bool> getData() async {
@@ -239,8 +243,8 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
                       ),
                       Padding(
                         padding: EdgeInsets.only(
-                            left: 16,
-                            right: 16,
+                            left: 50,
+                            right: 0,
                             top: 16 - 8.0 * topBarOpacity,
                             bottom: 12 - 8.0 * topBarOpacity),
                         child: Row(

@@ -1,7 +1,9 @@
 import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:best_flutter_ui_templates/custom_drawer/drawer_user_controller.dart';
 import 'package:best_flutter_ui_templates/custom_drawer/home_drawer.dart';
-import 'package:best_flutter_ui_templates/feedback_screen.dart';
+import 'package:best_flutter_ui_templates/custom_drawer/restrictions_screen.dart';
+import 'package:best_flutter_ui_templates/custom_drawer/feedback_screen.dart';
+import 'package:best_flutter_ui_templates/custom_drawer/about_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'fitness_app/fitness_app_home_screen.dart';
@@ -48,11 +50,36 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
   void changeIndex(DrawerIndex drawerIndexdata) {
     if (drawerIndex != drawerIndexdata) {
-      if (drawerIndex == DrawerIndex.FeedBack) {
+      if (drawerIndexdata == DrawerIndex.Plan) {
+        setState(() {
+          screenView = RestrictionsScreen();
+        });
+      }
+      if (drawerIndexdata == DrawerIndex.Restrictions) {
+        setState(() {
+          screenView = RestrictionsScreen();
+        });
+      }
+      if (drawerIndexdata == DrawerIndex.FeedBack) {
         setState(() {
           screenView = FeedbackScreen();
         });
-      } 
+      }
+      if (drawerIndexdata == DrawerIndex.Share) {
+        setState(() {
+          screenView = FeedbackScreen();
+        });
+      }
+      if (drawerIndexdata == DrawerIndex.About) {
+        setState(() {
+          screenView = AboutScreen();
+        });
+      }
+      if (drawerIndexdata == DrawerIndex.Settings) {
+        setState(() {
+          screenView = AboutScreen();
+        });
+      }
     }
   }
 }

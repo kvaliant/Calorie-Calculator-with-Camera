@@ -105,11 +105,11 @@ class MealsView extends StatelessWidget {
                 100 * (1.0 - animation.value), 0.0, 0.0),
             child: SizedBox(
               width: 130,
-              child: Stack(
+              child: Column(
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.only(
-                        top: 32, left: 8, right: 8, bottom: 16),
+                        top: 16, left: 8, right: 8, bottom: 16),
                     child: Container(
                       decoration: BoxDecoration(
                         boxShadow: <BoxShadow>[
@@ -131,47 +131,42 @@ class MealsView extends StatelessWidget {
                           bottomRight: Radius.circular(8.0),
                           bottomLeft: Radius.circular(8.0),
                           topLeft: Radius.circular(8.0),
-                          topRight: Radius.circular(54.0),
+                          topRight: Radius.circular(8.0),
                         ),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.only(
-                            top: 54, left: 16, right: 16, bottom: 8),
+                            top: 16, left: 16, right: 16, bottom: 8),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(
-                              mealsListData.titleTxt,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: FitnessAppTheme.fontName,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                letterSpacing: 0.2,
-                                color: FitnessAppTheme.white,
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: Text(
+                                mealsListData.titleTxt + '\n',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: FitnessAppTheme.fontName,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  letterSpacing: 0.2,
+                                  color: FitnessAppTheme.white,
+                                ),
                               ),
                             ),
-                            Expanded(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 8, bottom: 8),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      mealsListData.meals.join('\n'),
-                                      style: TextStyle(
-                                        fontFamily: FitnessAppTheme.fontName,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 10,
-                                        letterSpacing: 0.2,
-                                        color: FitnessAppTheme.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            Text(
+                              mealsListData.timeStamp.hour.toString() +
+                                  ':' +
+                                  mealsListData.timeStamp.minute.toString(),
+                              style: TextStyle(
+                                fontFamily: FitnessAppTheme.fontName,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 15,
+                                letterSpacing: 0.2,
+                                color: FitnessAppTheme.white,
                               ),
                             ),
                             mealsListData.kacl != 0
@@ -233,6 +228,7 @@ class MealsView extends StatelessWidget {
                       ),
                     ),
                   ),
+                  /*
                   Positioned(
                     top: 0,
                     left: 0,
@@ -254,6 +250,7 @@ class MealsView extends StatelessWidget {
                       child: Image.asset(mealsListData.imagePath),
                     ),
                   )
+                  */
                 ],
               ),
             ),
