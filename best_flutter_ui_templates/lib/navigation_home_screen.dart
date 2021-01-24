@@ -1,6 +1,7 @@
 import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:best_flutter_ui_templates/custom_drawer/drawer_user_controller.dart';
 import 'package:best_flutter_ui_templates/custom_drawer/home_drawer.dart';
+import 'package:best_flutter_ui_templates/custom_drawer/plan_screen.dart';
 import 'package:best_flutter_ui_templates/custom_drawer/restrictions_screen.dart';
 import 'package:best_flutter_ui_templates/custom_drawer/feedback_screen.dart';
 import 'package:best_flutter_ui_templates/custom_drawer/about_screen.dart';
@@ -52,7 +53,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
     if (drawerIndex != drawerIndexdata) {
       if (drawerIndexdata == DrawerIndex.Plan) {
         setState(() {
-          screenView = RestrictionsScreen();
+          screenView = PlanScreen();
         });
       }
       if (drawerIndexdata == DrawerIndex.Restrictions) {

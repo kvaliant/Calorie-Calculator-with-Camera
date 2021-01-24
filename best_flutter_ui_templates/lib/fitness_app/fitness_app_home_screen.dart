@@ -1,3 +1,4 @@
+import 'package:best_flutter_ui_templates/fitness_app/add_item/scan_screen.dart';
 import 'package:best_flutter_ui_templates/fitness_app/models/tabIcon_data.dart';
 import 'package:best_flutter_ui_templates/fitness_app/traning/training_screen.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +78,16 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
         ),
         BottomBarView(
           tabIconsList: tabIconsList,
-          addClick: () {},
+          addClick: () {
+            animationController.reverse().then<dynamic>((data) {
+              if (!mounted) {
+                return;
+              }
+              setState(() {
+                tabBody = ScanScreen(animationController: animationController);
+              });
+            });
+          },
           changeIndex: (int index) {
             if (index == 0 || index == 2) {
               animationController.reverse().then<dynamic>((data) {
