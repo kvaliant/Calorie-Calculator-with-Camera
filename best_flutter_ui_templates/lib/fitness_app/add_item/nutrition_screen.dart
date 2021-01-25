@@ -1,18 +1,19 @@
-import 'package:best_flutter_ui_templates/fitness_app/add_item/camera_view.dart';
-import 'package:best_flutter_ui_templates/fitness_app/add_item/search_view.dart';
-import 'package:best_flutter_ui_templates/fitness_app/ui_view/title_view.dart';
+import 'package:best_flutter_ui_templates/fitness_app/add_item/captured_view.dart';
+import 'package:best_flutter_ui_templates/fitness_app/add_item/nutrition_detail_view.dart';
+
 import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
 import 'package:flutter/material.dart';
 
-class ScanScreen extends StatefulWidget {
-  const ScanScreen({Key key, this.animationController}) : super(key: key);
+class NutritionScreen extends StatefulWidget {
+  const NutritionScreen({Key key, this.animationController}) : super(key: key);
 
   final AnimationController animationController;
   @override
-  _ScanScreenState createState() => _ScanScreenState();
+  _NutritionScreenState createState() => _NutritionScreenState();
 }
 
-class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
+class _NutritionScreenState extends State<NutritionScreen>
+    with TickerProviderStateMixin {
   Animation<double> topBarAnimation;
 
   List<Widget> listViews = <Widget>[];
@@ -54,33 +55,8 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
 
   void addAllListData() {
     const int count = 9;
-    /*
     listViews.add(
-      TitleView(
-        titleTxt: 'Mediterranean diet',
-        subTxt: 'Details',
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
-    */
-
-    listViews.add(
-      TitleView(
-        titleTxt: 'Search Food',
-        //subTxt: '',
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 4, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
-    listViews.add(
-      SearchView(
+      CapturedView(
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
             parent: widget.animationController,
             curve:
@@ -89,18 +65,7 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
       ),
     );
     listViews.add(
-      TitleView(
-        titleTxt: 'Food Scanner',
-        //subTxt: '',
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 4, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
-    listViews.add(
-      CameraView(
+      NutritionDetailView(
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
             parent: widget.animationController,
             curve:
@@ -124,9 +89,10 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
         body: Stack(
           children: <Widget>[
             getMainListViewUI(),
-            getAppBarUI(),
+
+            //getAppBarUI(),
             SizedBox(
-              height: MediaQuery.of(context).padding.bottom,
+              height: MediaQuery.of(context).padding.bottom + 24,
             )
           ],
         ),
@@ -144,9 +110,8 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
           return ListView.builder(
             controller: scrollController,
             padding: EdgeInsets.only(
-              top: AppBar().preferredSize.height +
-                  MediaQuery.of(context).padding.top +
-                  24,
+              top: 24, //AppBar().preferredSize.height,
+              //+ MediaQuery.of(context).padding.top,
               bottom: 62 + MediaQuery.of(context).padding.bottom,
             ),
             itemCount: listViews.length,

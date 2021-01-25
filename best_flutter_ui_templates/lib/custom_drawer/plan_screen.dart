@@ -419,8 +419,6 @@ class _PlanScreenState extends State<PlanScreen> {
   }
 
   Widget _buildSuggestedPlan() {
-    const double paddingSize = 10;
-
     return Padding(
       padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
       child: Container(
@@ -626,8 +624,6 @@ class _PlanScreenState extends State<PlanScreen> {
       ),
     );
   }
-
-  Widget _buildChoosePlan() {}
 }
 
 int currentSelectedPlan;

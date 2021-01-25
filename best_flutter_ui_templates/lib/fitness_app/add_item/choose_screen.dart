@@ -1,23 +1,19 @@
-//import 'package:best_flutter_ui_templates/fitness_app/ui_view/body_measurement.dart';
-//import 'package:best_flutter_ui_templates/fitness_app/ui_view/glass_view.dart';
-import 'package:best_flutter_ui_templates/app_theme.dart';
-import 'package:best_flutter_ui_templates/fitness_app/add_item/camera_view.dart';
-import 'package:best_flutter_ui_templates/fitness_app/add_item/search_view.dart';
+import 'package:best_flutter_ui_templates/fitness_app/add_item/captured_view.dart';
+import 'package:best_flutter_ui_templates/fitness_app/add_item/suggestion_view.dart';
 import 'package:best_flutter_ui_templates/fitness_app/ui_view/title_view.dart';
 import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
-//import 'package:best_flutter_ui_templates/fitness_app/my_diary/water_view.dart';
 import 'package:flutter/material.dart';
-import 'package:best_flutter_ui_templates/main.dart';
 
-class ScanScreen extends StatefulWidget {
-  const ScanScreen({Key key, this.animationController}) : super(key: key);
+class ChooseScreen extends StatefulWidget {
+  const ChooseScreen({Key key, this.animationController}) : super(key: key);
 
   final AnimationController animationController;
   @override
-  _ScanScreenState createState() => _ScanScreenState();
+  _ChooseScreenState createState() => _ChooseScreenState();
 }
 
-class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
+class _ChooseScreenState extends State<ChooseScreen>
+    with TickerProviderStateMixin {
   Animation<double> topBarAnimation;
 
   List<Widget> listViews = <Widget>[];
@@ -59,33 +55,8 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
 
   void addAllListData() {
     const int count = 9;
-    /*
     listViews.add(
-      TitleView(
-        titleTxt: 'Mediterranean diet',
-        subTxt: 'Details',
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
-    */
-
-    listViews.add(
-      TitleView(
-        titleTxt: 'Search Food',
-        //subTxt: '',
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 4, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
-    listViews.add(
-      SearchView(
+      CapturedView(
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
             parent: widget.animationController,
             curve:
@@ -95,7 +66,7 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
     );
     listViews.add(
       TitleView(
-        titleTxt: 'Food Scanner',
+        titleTxt: 'Choose one best describe your food',
         //subTxt: '',
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
             parent: widget.animationController,
@@ -105,71 +76,15 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
       ),
     );
     listViews.add(
-      CameraView(
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
-
-    /*
-    listViews.add(
-      TitleView(
-        titleTxt: 'Body measurement',
-        subTxt: 'Today',
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 4, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
-
-    listViews.add(
-      BodyMeasurementView(
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 5, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
-    */
-    /*
-    listViews.add(
-      TitleView(
-        titleTxt: 'Water',
-        subTxt: 'Aqua SmartBottle',
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 6, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
-
-    listViews.add(
-      WaterView(
+      SuggestionView(
         mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
             CurvedAnimation(
                 parent: widget.animationController,
-                curve: Interval((1 / count) * 7, 1.0,
+                curve: Interval((1 / count) * 1, 1.0,
                     curve: Curves.fastOutSlowIn))),
         mainScreenAnimationController: widget.animationController,
       ),
     );
-    listViews.add(
-      GlassView(
-          animation: Tween<double>(begin: 0.0, end: 1.0).animate(
-              CurvedAnimation(
-                  parent: widget.animationController,
-                  curve: Interval((1 / count) * 8, 1.0,
-                      curve: Curves.fastOutSlowIn))),
-          animationController: widget.animationController),
-    );
-    */
   }
 
   Future<bool> getData() async {

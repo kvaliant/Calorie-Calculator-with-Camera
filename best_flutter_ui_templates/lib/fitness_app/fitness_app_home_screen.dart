@@ -6,6 +6,10 @@ import 'bottom_navigation_view/bottom_bar_view.dart';
 import 'fintness_app_theme.dart';
 import 'my_diary/my_diary_screen.dart';
 
+import 'package:best_flutter_ui_templates/fitness_app/add_item/nutrition_screen.dart';
+
+enum middleButtonEnum { add, capture, retry }
+
 class FitnessAppHomeScreen extends StatefulWidget {
   @override
   _FitnessAppHomeScreenState createState() => _FitnessAppHomeScreenState();
@@ -20,6 +24,8 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
   Widget tabBody = Container(
     color: FitnessAppTheme.background,
   );
+
+  middleButtonEnum currentMiddleButton = middleButtonEnum.add;
 
   @override
   void initState() {
@@ -84,11 +90,29 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                 return;
               }
               setState(() {
-                tabBody = ScanScreen(animationController: animationController);
+                switch (currentMiddleButton) {
+                  case middleButtonEnum.add:
+                    tabBody =
+                        ScanScreen(animationController: animationController);
+                    currentMiddleButton = middleButtonEnum.capture;
+                    break;
+                  case middleButtonEnum.capture:
+                    tabBody = NutritionScreen(
+                        animationController: animationController);
+                    currentMiddleButton = middleButtonEnum.retry;
+                    break;
+                  case middleButtonEnum.retry:
+                    tabBody =
+                        ScanScreen(animationController: animationController);
+                    currentMiddleButton = middleButtonEnum.add;
+                    break;
+                  default:
+                }
               });
             });
           },
           changeIndex: (int index) {
+            currentMiddleButton = middleButtonEnum.add;
             if (index == 0 || index == 2) {
               animationController.reverse().then<dynamic>((data) {
                 if (!mounted) {

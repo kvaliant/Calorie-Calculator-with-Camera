@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import '../../main.dart';
 import '../models/tabIcon_data.dart';
 
+enum middleButtonEnum { add, capture, retry }
+
 class BottomBarView extends StatefulWidget {
   const BottomBarView(
       {Key key, this.tabIconsList, this.changeIndex, this.addClick})
@@ -22,6 +24,8 @@ class BottomBarView extends StatefulWidget {
 class _BottomBarViewState extends State<BottomBarView>
     with TickerProviderStateMixin {
   AnimationController animationController;
+
+  middleButtonEnum currentMiddleButton = middleButtonEnum.add;
 
   @override
   void initState() {
@@ -166,10 +170,31 @@ class _BottomBarViewState extends State<BottomBarView>
                           highlightColor: Colors.transparent,
                           focusColor: Colors.transparent,
                           onTap: () {
+                            switch (currentMiddleButton) {
+                              case middleButtonEnum.add:
+                                currentMiddleButton = middleButtonEnum.capture;
+                                break;
+                              case middleButtonEnum.capture:
+                                currentMiddleButton = middleButtonEnum.retry;
+                                break;
+                              case middleButtonEnum.retry:
+                                currentMiddleButton = middleButtonEnum.capture;
+                                break;
+                              default:
+                            }
                             widget.addClick();
+                            removeAllSelection();
                           },
                           child: Icon(
-                            Icons.add,
+                            currentMiddleButton == middleButtonEnum.add
+                                ? Icons.add
+                                : currentMiddleButton ==
+                                        middleButtonEnum.capture
+                                    ? Icons.camera
+                                    : currentMiddleButton ==
+                                            middleButtonEnum.retry
+                                        ? Icons.loop
+                                        : null,
                             color: FitnessAppTheme.white,
                             size: 32,
                           ),
@@ -188,12 +213,22 @@ class _BottomBarViewState extends State<BottomBarView>
 
   void setRemoveAllSelection(TabIconData tabIconData) {
     if (!mounted) return;
+    currentMiddleButton = middleButtonEnum.add;
     setState(() {
       widget.tabIconsList.forEach((TabIconData tab) {
         tab.isSelected = false;
         if (tabIconData.index == tab.index) {
           tab.isSelected = true;
         }
+      });
+    });
+  }
+
+  void removeAllSelection() {
+    if (!mounted) return;
+    setState(() {
+      widget.tabIconsList.forEach((TabIconData tab) {
+        tab.isSelected = false;
       });
     });
   }
