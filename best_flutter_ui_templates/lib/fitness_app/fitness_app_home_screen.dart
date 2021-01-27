@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'bottom_navigation_view/bottom_bar_view.dart';
 import 'fintness_app_theme.dart';
 import 'my_diary/my_diary_screen.dart';
-
+import 'package:best_flutter_ui_templates/fitness_app/add_item/choose_screen.dart';
 import 'package:best_flutter_ui_templates/fitness_app/add_item/nutrition_screen.dart';
 
 enum middleButtonEnum { add, capture, retry }
@@ -97,13 +97,13 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                     currentMiddleButton = middleButtonEnum.capture;
                     break;
                   case middleButtonEnum.capture:
-                    tabBody = NutritionScreen(
-                        animationController: animationController);
+                    tabBody =
+                        ChooseScreen(animationController: animationController);
                     currentMiddleButton = middleButtonEnum.retry;
                     break;
                   case middleButtonEnum.retry:
                     tabBody =
-                        ScanScreen(animationController: animationController);
+                        ChooseScreen(animationController: animationController);
                     currentMiddleButton = middleButtonEnum.add;
                     break;
                   default:

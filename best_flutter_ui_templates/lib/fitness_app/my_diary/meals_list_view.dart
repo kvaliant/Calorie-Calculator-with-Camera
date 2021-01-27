@@ -1,7 +1,11 @@
+import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
 import 'package:best_flutter_ui_templates/fitness_app/models/meals_list_data.dart';
 import 'package:best_flutter_ui_templates/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 import '../../main.dart';
 
@@ -20,13 +24,19 @@ class MealsListView extends StatefulWidget {
 class _MealsListViewState extends State<MealsListView>
     with TickerProviderStateMixin {
   AnimationController animationController;
-  List<MealsListData> mealsListData = MealsListData.tabIconsList;
+  List<FoodObject> foodList;
 
   @override
   void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
+    asyncMethod();
     super.initState();
+  }
+
+  Future<bool> asyncMethod() async {
+    foodList = await _readHistory();
+    return true;
   }
 
   Future<bool> getData() async {
@@ -53,43 +63,118 @@ class _MealsListViewState extends State<MealsListView>
             child: Container(
               height: 216,
               width: double.infinity,
-              child: ListView.builder(
-                padding: const EdgeInsets.only(
-                    top: 0, bottom: 0, right: 16, left: 16),
-                itemCount: mealsListData.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, int index) {
-                  final int count =
-                      mealsListData.length > 10 ? 10 : mealsListData.length;
-                  final Animation<double> animation =
-                      Tween<double>(begin: 0.0, end: 1.0).animate(
-                          CurvedAnimation(
-                              parent: animationController,
-                              curve: Interval((1 / count) * index, 1.0,
-                                  curve: Curves.fastOutSlowIn)));
-                  animationController.forward();
+              child: foodList == null
+                  ? Container()
+                  : ListView.builder(
+                      padding: const EdgeInsets.only(
+                          top: 0, bottom: 0, right: 16, left: 16),
+                      itemCount: foodList.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext context, int index) {
+                        final int count =
+                            foodList.length > 10 ? 10 : foodList.length;
+                        final Animation<double> animation =
+                            Tween<double>(begin: 0.0, end: 1.0).animate(
+                                CurvedAnimation(
+                                    parent: animationController,
+                                    curve: Interval(
+                                        (1 / count ?? 1) * index, 1.0,
+                                        curve: Curves.fastOutSlowIn)));
+                        animationController.forward();
+                        return MealsView(
+                          foodList: foodList[index],
+                          animation: animation,
+                          animationController: animationController,
+                        );
+                      },
+                    ),
 
-                  return MealsView(
-                    mealsListData: mealsListData[index],
-                    animation: animation,
-                    animationController: animationController,
-                  );
-                },
-              ),
+              /* foodList.length == 0
+                  ? Text('')
+                  : FutureBuilder(
+                      future: _readHistory(),
+                      builder: (context, listFood) {
+                        if (!listFood.hasData || foodList == null) {
+                          return Container();
+                        } else {
+                          return ListView.builder(
+                            padding: const EdgeInsets.only(
+                                top: 0, bottom: 0, right: 16, left: 16),
+                            itemCount: foodList.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              final int count =
+                                  foodList.length > 10 ? 10 : foodList.length;
+                              final Animation<double> animation =
+                                  Tween<double>(begin: 0.0, end: 1.0).animate(
+                                      CurvedAnimation(
+                                          parent: animationController,
+                                          curve: Interval(
+                                              (1 / count ?? 1) * index, 1.0,
+                                              curve: Curves.fastOutSlowIn)));
+                              animationController.forward();
+                              return MealsView(
+                                foodList: foodList[index],
+                                animation: animation,
+                                animationController: animationController,
+                              );
+                            },
+                          );
+                        }
+                      },
+                    ),*/
             ),
           ),
         );
       },
     );
   }
+
+  int keyPointer; //id, name, cal, timeStamp
+  Future<List<FoodObject>> _readHistory() async {
+    keyPointer = 0;
+    List<FoodObject> foodList;
+    foodList = <FoodObject>[];
+    int index = 0;
+    int id;
+    String name;
+    int calorie;
+    DateTime timeStamp;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> _history = (prefs.getStringList('history') ?? null);
+    if (_history != null) {
+      do {
+        String text = _history.elementAt(index);
+        keyPointer == 0
+            ? id = int.parse(text) //int.tryParse(text)
+            : keyPointer == 1
+                ? name = text
+                : keyPointer == 2
+                    ? calorie = int.parse(text) //int.tryParse(text)
+                    : timeStamp = DateTime.parse("1969-07-20 20:18:04Z");
+        keyPointer++;
+        if (keyPointer == 4) {
+          keyPointer = 0;
+          FoodObject makeFood = FoodObject(
+              id: id, name: name, calorie: calorie, timeStamp: timeStamp);
+          foodList.add(makeFood);
+        }
+        FoodObject makeFood = FoodObject(
+            id: id, name: name, calorie: calorie, timeStamp: timeStamp);
+        foodList.add(makeFood);
+        index++;
+      } while (index < _history.length);
+    }
+    return foodList;
+  }
 }
 
 class MealsView extends StatelessWidget {
   const MealsView(
-      {Key key, this.mealsListData, this.animationController, this.animation})
+      {Key key, this.foodList, this.animationController, this.animation})
       : super(key: key);
 
-  final MealsListData mealsListData;
+  final FoodObject foodList;
   final AnimationController animationController;
   final Animation<dynamic> animation;
 
@@ -114,19 +199,10 @@ class MealsView extends StatelessWidget {
                       decoration: BoxDecoration(
                         boxShadow: <BoxShadow>[
                           BoxShadow(
-                              color: HexColor(mealsListData.endColor)
-                                  .withOpacity(0.6),
+                              color: AppTheme.dark_grey.withOpacity(0.6),
                               offset: const Offset(1.1, 4.0),
                               blurRadius: 8.0),
                         ],
-                        gradient: LinearGradient(
-                          colors: <HexColor>[
-                            HexColor(mealsListData.startColor),
-                            HexColor(mealsListData.endColor),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
                         borderRadius: const BorderRadius.only(
                           bottomRight: Radius.circular(8.0),
                           bottomLeft: Radius.circular(8.0),
@@ -144,23 +220,23 @@ class MealsView extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 5),
                               child: Text(
-                                mealsListData.titleTxt + '\n',
+                                foodList.name + '\n',
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: FitnessAppTheme.fontName,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                  fontSize: 9,
                                   letterSpacing: 0.2,
                                   color: FitnessAppTheme.white,
                                 ),
                               ),
                             ),
                             Text(
-                              mealsListData.timeStamp.hour.toString() +
+                              foodList.timeStamp.hour.toString() +
                                   ':' +
-                                  mealsListData.timeStamp.minute.toString(),
+                                  foodList.timeStamp.minute.toString(),
                               style: TextStyle(
                                 fontFamily: FitnessAppTheme.fontName,
                                 fontWeight: FontWeight.w500,
@@ -169,13 +245,13 @@ class MealsView extends StatelessWidget {
                                 color: FitnessAppTheme.white,
                               ),
                             ),
-                            mealsListData.kacl != 0
+                            foodList.calorie != 0
                                 ? Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: <Widget>[
                                       Text(
-                                        mealsListData.kacl.toString(),
+                                        foodList.calorie.toString(),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontFamily: FitnessAppTheme.fontName,
@@ -189,7 +265,7 @@ class MealsView extends StatelessWidget {
                                         padding: const EdgeInsets.only(
                                             left: 4, bottom: 3),
                                         child: Text(
-                                          'kcal',
+                                          'cal',
                                           style: TextStyle(
                                             fontFamily:
                                                 FitnessAppTheme.fontName,
@@ -218,7 +294,7 @@ class MealsView extends StatelessWidget {
                                       padding: const EdgeInsets.all(6.0),
                                       child: Icon(
                                         Icons.add,
-                                        color: HexColor(mealsListData.endColor),
+                                        color: AppTheme.white,
                                         size: 24,
                                       ),
                                     ),
@@ -259,4 +335,18 @@ class MealsView extends StatelessWidget {
       },
     );
   }
+}
+
+class FoodObject {
+  FoodObject({
+    this.id = 0,
+    this.name = '',
+    this.calorie = 0,
+    this.timeStamp,
+  });
+
+  int id;
+  String name;
+  int calorie;
+  DateTime timeStamp;
 }
