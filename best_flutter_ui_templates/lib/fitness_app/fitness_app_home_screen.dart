@@ -6,7 +6,7 @@ import 'bottom_navigation_view/bottom_bar_view.dart';
 import 'fintness_app_theme.dart';
 import 'my_diary/my_diary_screen.dart';
 import 'package:best_flutter_ui_templates/fitness_app/add_item/choose_screen.dart';
-import 'package:best_flutter_ui_templates/fitness_app/add_item/nutrition_screen.dart';
+//import 'package:best_flutter_ui_templates/fitness_app/add_item/nutrition_screen.dart';
 
 enum middleButtonEnum { add, capture, retry }
 

@@ -1,21 +1,19 @@
 import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
-import 'package:best_flutter_ui_templates/fitness_app/models/meals_list_data.dart';
-import 'package:best_flutter_ui_templates/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
-
-import '../../main.dart';
 
 class MealsListView extends StatefulWidget {
   const MealsListView(
-      {Key key, this.mainScreenAnimationController, this.mainScreenAnimation})
+      {Key key,
+      this.mainScreenAnimationController,
+      this.mainScreenAnimation,
+      this.currentTime})
       : super(key: key);
 
   final AnimationController mainScreenAnimationController;
   final Animation<dynamic> mainScreenAnimation;
+  final DateTime currentTime;
 
   @override
   _MealsListViewState createState() => _MealsListViewState();
@@ -25,6 +23,20 @@ class _MealsListViewState extends State<MealsListView>
     with TickerProviderStateMixin {
   AnimationController animationController;
   List<FoodObject> foodList;
+  List<FoodObject> nextFoodList;
+  List<FoodObject> prevFoodList;
+
+  @override
+  void didUpdateWidget(MealsListView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.currentTime != oldWidget.currentTime) {
+      if (widget.currentTime.isAfter(oldWidget.currentTime))
+        foodList = nextFoodList;
+      if (widget.currentTime.isBefore(oldWidget.currentTime))
+        foodList = prevFoodList;
+      asyncMethod();
+    }
+  }
 
   @override
   void initState() {
@@ -35,7 +47,12 @@ class _MealsListViewState extends State<MealsListView>
   }
 
   Future<bool> asyncMethod() async {
-    foodList = await _readHistory();
+    DateTime dateTime = widget.currentTime;
+    foodList = await _readHistory(dateTime);
+    dateTime = dateTime.add(Duration(days: 1));
+    nextFoodList = await _readHistory(dateTime);
+    dateTime = dateTime.add(Duration(days: -2));
+    prevFoodList = await _readHistory(dateTime);
     return true;
   }
 
@@ -60,12 +77,50 @@ class _MealsListViewState extends State<MealsListView>
           child: Transform(
             transform: Matrix4.translationValues(
                 0.0, 30 * (1.0 - widget.mainScreenAnimation.value), 0.0),
-            child: Container(
-              height: 216,
-              width: double.infinity,
-              child: foodList == null
-                  ? Container()
-                  : ListView.builder(
+            child: foodList == null || foodList.length == 0
+                ? Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          boxShadow: <BoxShadow>[
+                            BoxShadow(
+                                color: AppTheme.dark_grey.withOpacity(0.1),
+                                offset: const Offset(1.1, 4.0),
+                                blurRadius: 8.0),
+                          ],
+                          borderRadius: const BorderRadius.only(
+                            bottomRight: Radius.circular(16.0),
+                            bottomLeft: Radius.circular(16.0),
+                            topLeft: Radius.circular(16.0),
+                            topRight: Radius.circular(16.0),
+                          ),
+                        ),
+                        height: 100,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 16, left: 16, right: 16, bottom: 8),
+                          child: Center(
+                            child: Text(
+                              'Once you have added some food\nit will appear here',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: FitnessAppTheme.fontName,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 20,
+                                letterSpacing: 0.2,
+                                color: FitnessAppTheme.dark_grey,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(
+                    height: 216,
+                    width: double.infinity,
+                    child: ListView.builder(
                       padding: const EdgeInsets.only(
                           top: 0, bottom: 0, right: 16, left: 16),
                       itemCount: foodList.length,
@@ -88,50 +143,27 @@ class _MealsListViewState extends State<MealsListView>
                         );
                       },
                     ),
-
-              /* foodList.length == 0
-                  ? Text('')
-                  : FutureBuilder(
-                      future: _readHistory(),
-                      builder: (context, listFood) {
-                        if (!listFood.hasData || foodList == null) {
-                          return Container();
-                        } else {
-                          return ListView.builder(
-                            padding: const EdgeInsets.only(
-                                top: 0, bottom: 0, right: 16, left: 16),
-                            itemCount: foodList.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (BuildContext context, int index) {
-                              final int count =
-                                  foodList.length > 10 ? 10 : foodList.length;
-                              final Animation<double> animation =
-                                  Tween<double>(begin: 0.0, end: 1.0).animate(
-                                      CurvedAnimation(
-                                          parent: animationController,
-                                          curve: Interval(
-                                              (1 / count ?? 1) * index, 1.0,
-                                              curve: Curves.fastOutSlowIn)));
-                              animationController.forward();
-                              return MealsView(
-                                foodList: foodList[index],
-                                animation: animation,
-                                animationController: animationController,
-                              );
-                            },
-                          );
-                        }
-                      },
-                    ),*/
-            ),
+                  ),
           ),
         );
       },
     );
   }
 
+  _saveAll() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> _test1 = (prefs.getStringList('history') ?? null);
+    _test1.add('1');
+    _test1.add('Pizza');
+    _test1.add('300');
+    _test1.add(DateTime.now().toString());
+    prefs.setStringList('history', _test1);
+  }
+
   int keyPointer; //id, name, cal, timeStamp
-  Future<List<FoodObject>> _readHistory() async {
+  Future<List<FoodObject>> _readHistory(DateTime dateTime) async {
+    //_saveAll();
+    dateTime == null ? dateTime = DateTime.now() : null;
     keyPointer = 0;
     List<FoodObject> foodList;
     foodList = <FoodObject>[];
@@ -151,17 +183,15 @@ class _MealsListViewState extends State<MealsListView>
                 ? name = text
                 : keyPointer == 2
                     ? calorie = int.parse(text) //int.tryParse(text)
-                    : timeStamp = DateTime.parse("1969-07-20 20:18:04Z");
+                    : timeStamp = DateTime.parse(text);
         keyPointer++;
         if (keyPointer == 4) {
           keyPointer = 0;
           FoodObject makeFood = FoodObject(
               id: id, name: name, calorie: calorie, timeStamp: timeStamp);
-          foodList.add(makeFood);
+          if (makeFood.timeStamp.month == dateTime.month &&
+              makeFood.timeStamp.day == dateTime.day) foodList.add(makeFood);
         }
-        FoodObject makeFood = FoodObject(
-            id: id, name: name, calorie: calorie, timeStamp: timeStamp);
-        foodList.add(makeFood);
         index++;
       } while (index < _history.length);
     }
@@ -197,11 +227,12 @@ class MealsView extends StatelessWidget {
                         top: 16, left: 8, right: 8, bottom: 16),
                     child: Container(
                       decoration: BoxDecoration(
+                        color: FitnessAppTheme.nearlyDarkBlue,
                         boxShadow: <BoxShadow>[
                           BoxShadow(
                               color: AppTheme.dark_grey.withOpacity(0.6),
                               offset: const Offset(1.1, 4.0),
-                              blurRadius: 8.0),
+                              blurRadius: 16.0),
                         ],
                         borderRadius: const BorderRadius.only(
                           bottomRight: Radius.circular(8.0),
@@ -227,7 +258,7 @@ class MealsView extends StatelessWidget {
                                 style: TextStyle(
                                   fontFamily: FitnessAppTheme.fontName,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 9,
+                                  fontSize: 16,
                                   letterSpacing: 0.2,
                                   color: FitnessAppTheme.white,
                                 ),
@@ -235,7 +266,7 @@ class MealsView extends StatelessWidget {
                             ),
                             Text(
                               foodList.timeStamp.hour.toString() +
-                                  ':' +
+                                  '' +
                                   foodList.timeStamp.minute.toString(),
                               style: TextStyle(
                                 fontFamily: FitnessAppTheme.fontName,
@@ -270,7 +301,7 @@ class MealsView extends StatelessWidget {
                                             fontFamily:
                                                 FitnessAppTheme.fontName,
                                             fontWeight: FontWeight.w500,
-                                            fontSize: 10,
+                                            fontSize: 12,
                                             letterSpacing: 0.2,
                                             color: FitnessAppTheme.white,
                                           ),
@@ -304,29 +335,6 @@ class MealsView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  /*
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    child: Container(
-                      width: 84,
-                      height: 84,
-                      decoration: BoxDecoration(
-                        color: FitnessAppTheme.nearlyWhite.withOpacity(0.2),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    left: 8,
-                    child: SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Image.asset(mealsListData.imagePath),
-                    ),
-                  )
-                  */
                 ],
               ),
             ),

@@ -52,7 +52,7 @@ class _PlanScreenState extends State<PlanScreen> {
   }
 
   //Incrementing counter after click
-  _saveAll() async {
+  Future<bool> _saveAll() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _gender = currentGender == genderEnum.male ? 1 : 0;
     _unitType = currentUnitType == unitTypeEnum.Metric;
@@ -63,17 +63,17 @@ class _PlanScreenState extends State<PlanScreen> {
         _weight != null &&
         _bmr != 0 &&
         _planDailyCalorie != null) {
-      setState(() {
-        prefs.setInt('age', _age);
-        prefs.setInt('gender', _gender);
-        prefs.setBool('unit_type', _unitType);
-        prefs.setInt('height', _height);
-        prefs.setInt('weight', _weight);
-        prefs.setInt('activities', _activities);
-        prefs.setInt('plan_radio', _planRadio);
-        prefs.setInt('plan_daily_calorie', _planDailyCalorie);
-      });
+      prefs.setInt('age', _age);
+      prefs.setInt('gender', _gender);
+      prefs.setBool('unit_type', _unitType);
+      prefs.setInt('height', _height);
+      prefs.setInt('weight', _weight);
+      prefs.setInt('activities', _activities);
+      prefs.setInt('plan_radio', _planRadio);
+      prefs.setInt('plan_daily_calorie', _planDailyCalorie);
+      return true;
     }
+    return false;
   }
 
   _calculateBMR() async {

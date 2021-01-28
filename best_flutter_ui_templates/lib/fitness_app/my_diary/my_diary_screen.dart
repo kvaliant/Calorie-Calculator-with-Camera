@@ -1,11 +1,9 @@
-//import 'package:best_flutter_ui_templates/fitness_app/ui_view/body_measurement.dart';
-//import 'package:best_flutter_ui_templates/fitness_app/ui_view/glass_view.dart';
 import 'package:best_flutter_ui_templates/fitness_app/ui_view/mediterranesn_diet_view.dart';
 import 'package:best_flutter_ui_templates/fitness_app/ui_view/title_view.dart';
 import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
 import 'package:best_flutter_ui_templates/fitness_app/my_diary/meals_list_view.dart';
-//import 'package:best_flutter_ui_templates/fitness_app/my_diary/water_view.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class MyDiaryScreen extends StatefulWidget {
   const MyDiaryScreen({Key key, this.animationController}) : super(key: key);
@@ -15,6 +13,8 @@ class MyDiaryScreen extends StatefulWidget {
   _MyDiaryScreenState createState() => _MyDiaryScreenState();
 }
 
+bool listViewRefreshHelper = true;
+
 class _MyDiaryScreenState extends State<MyDiaryScreen>
     with TickerProviderStateMixin {
   Animation<double> topBarAnimation;
@@ -22,6 +22,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
   List<Widget> listViews = <Widget>[];
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
+  DateTime _currentTime = DateTime.now();
 
   @override
   void initState() {
@@ -58,32 +59,21 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
 
   void addAllListData() {
     const int count = 9;
-    /*
-    listViews.add(
-      TitleView(
-        titleTxt: 'Mediterranean diet',
-        subTxt: 'Details',
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
-    */
     listViews.add(
       MediterranesnDietView(
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
+        mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
+            CurvedAnimation(
+                parent: widget.animationController,
+                curve: Interval((1 / count) * 1, 1.0,
+                    curve: Curves.fastOutSlowIn))),
+        mainScreenAnimationController: widget.animationController,
+        currentTime: _currentTime,
       ),
     );
     listViews.add(
       TitleView(
         titleTxt: 'Meals today',
-        subTxt: 'Details',
+        subTxt: '',
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
             parent: widget.animationController,
             curve:
@@ -100,8 +90,57 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
                 curve: Interval((1 / count) * 3, 1.0,
                     curve: Curves.fastOutSlowIn))),
         mainScreenAnimationController: widget.animationController,
+        currentTime: _currentTime,
       ),
     );
+  }
+
+  Future<bool> clearListData() async {
+    setState(() {
+      listViews.clear();
+    });
+    return listViews.length == 0 ? true : false;
+  }
+
+  Future<bool> updateListData() async {
+    const int count = 9;
+    setState(() {
+      listViews.add(
+        MediterranesnDietView(
+          mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(
+                  parent: widget.animationController,
+                  curve: Interval((1 / count) * 1, 1.0,
+                      curve: Curves.fastOutSlowIn))),
+          mainScreenAnimationController: widget.animationController,
+          currentTime: _currentTime,
+        ),
+      );
+      listViews.add(
+        TitleView(
+          titleTxt: 'Meals today',
+          subTxt: '',
+          animation: Tween<double>(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(
+                  parent: widget.animationController,
+                  curve: Interval((1 / count) * 2, 1.0,
+                      curve: Curves.fastOutSlowIn))),
+          animationController: widget.animationController,
+        ),
+      );
+      listViews.add(
+        MealsListView(
+          mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(
+                  parent: widget.animationController,
+                  curve: Interval((1 / count) * 3, 1.0,
+                      curve: Curves.fastOutSlowIn))),
+          mainScreenAnimationController: widget.animationController,
+          currentTime: _currentTime,
+        ),
+      );
+    });
+    return true;
   }
 
   Future<bool> getData() async {
@@ -217,7 +256,14 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
                                 highlightColor: Colors.transparent,
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(32.0)),
-                                onTap: () {},
+                                onTap: () {
+                                  setState(() {
+                                    _currentTime = _currentTime
+                                        .add(new Duration(days: -1));
+                                    listViews.clear();
+                                  });
+                                  updateListData();
+                                },
                                 child: Center(
                                   child: Icon(
                                     Icons.keyboard_arrow_left,
@@ -242,7 +288,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
                                     ),
                                   ),
                                   Text(
-                                    '15 May',
+                                    DateFormat('MMMMd').format(_currentTime),
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                       fontFamily: FitnessAppTheme.fontName,
@@ -262,7 +308,14 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
                                 highlightColor: Colors.transparent,
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(32.0)),
-                                onTap: () {},
+                                onTap: () {
+                                  setState(() {
+                                    _currentTime =
+                                        _currentTime.add(new Duration(days: 1));
+                                    listViews.clear();
+                                  });
+                                  updateListData();
+                                },
                                 child: Center(
                                   child: Icon(
                                     Icons.keyboard_arrow_right,
