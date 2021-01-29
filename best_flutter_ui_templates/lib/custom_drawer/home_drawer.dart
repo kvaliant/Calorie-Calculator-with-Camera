@@ -37,13 +37,11 @@ class _HomeDrawerState extends State<HomeDrawer> {
         labelName: 'Food Restrictions',
         icon: Icon(Icons.list),
       ),
-      /*
       DrawerList(
         index: DrawerIndex.FeedBack,
         labelName: 'FeedBack',
         icon: Icon(Icons.help),
       ),
-      */
       DrawerList(
         index: DrawerIndex.Share,
         labelName: 'Rate the app',
@@ -94,10 +92,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
                                   .value /
                               360),
                           child: Container(
-                            height: 120,
-                            width: 120,
+                            height: 100,
+                            width: 100,
                             decoration: BoxDecoration(
-                              shape: BoxShape.circle,
                               boxShadow: <BoxShadow>[
                                 BoxShadow(
                                     color: AppTheme.grey.withOpacity(0.6),
@@ -105,26 +102,18 @@ class _HomeDrawerState extends State<HomeDrawer> {
                                     blurRadius: 8),
                               ],
                             ),
-                            child: ClipRRect(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(60.0)),
-                              child: Image.asset('assets/images/userImage.png'),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                navigationtoScreen(DrawerIndex.Home);
+                              },
+                              child: ClipRRect(
+                                child: Icon(Icons.home),
+                              ),
                             ),
                           ),
                         ),
                       );
                     },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, left: 4),
-                    child: Text(
-                      'Chris Hemsworth',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.grey,
-                        fontSize: 18,
-                      ),
-                    ),
                   ),
                 ],
               ),
@@ -288,6 +277,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
 }
 
 enum DrawerIndex {
+  Home,
   FeedBack,
   Plan,
   Restrictions,

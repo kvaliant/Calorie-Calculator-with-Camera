@@ -51,6 +51,11 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
 
   void changeIndex(DrawerIndex drawerIndexdata) {
     if (drawerIndex != drawerIndexdata) {
+      if (drawerIndexdata == DrawerIndex.Home) {
+        setState(() {
+          screenView = FitnessAppHomeScreen();
+        });
+      }
       if (drawerIndexdata == DrawerIndex.Plan) {
         setState(() {
           screenView = PlanScreen();

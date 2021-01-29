@@ -1,27 +1,53 @@
 import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:best_flutter_ui_templates/main.dart';
 import 'package:best_flutter_ui_templates/fitness_app/add_item/restriction_detail_view.dart';
+import 'package:best_flutter_ui_templates/fitness_app/models/foods_list_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import '../fintness_app_theme.dart';
 
-class NutritionDetailView extends StatelessWidget {
+class NutritionDetailView extends StatefulWidget {
   final AnimationController animationController;
   final Animation animation;
+  final FoodsListData foodData;
 
-  const NutritionDetailView({Key key, this.animationController, this.animation})
+  const NutritionDetailView(
+      {Key key, this.animationController, this.animation, this.foodData})
       : super(key: key);
+  @override
+  _NutritionDetailViewState createState() => _NutritionDetailViewState();
+}
+
+class _NutritionDetailViewState extends State<NutritionDetailView> {
+  FoodsListData currentFood;
+
+  @override
+  void initState() {
+    setState(() {
+      currentFood = widget.foodData;
+    });
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(NutritionDetailView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    setState(() {
+      currentFood = widget.foodData;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: animationController,
+      animation: widget.animationController,
       builder: (BuildContext context, Widget child) {
         return FadeTransition(
-          opacity: animation,
+          opacity: widget.animation,
           child: new Transform(
             transform: new Matrix4.translationValues(
-                0.0, 30 * (1.0 - animation.value), 0.0),
+                0.0, 30 * (1.0 - widget.animation.value), 0.0),
             child: Padding(
               padding:
                   const EdgeInsets.only(left: 24, right: 24, top: 0, bottom: 0),
@@ -75,7 +101,7 @@ class NutritionDetailView extends StatelessWidget {
               padding:
                   const EdgeInsets.only(left: 24, right: 24, top: 0, bottom: 0),
               child: Text(
-                'Hamburger',
+                currentFood == null ? '' : currentFood.foodName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   shadows: <Shadow>[
@@ -225,7 +251,9 @@ class NutritionDetailView extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 75),
                     child: Text(
-                      '303 Calorie',
+                      currentFood == null
+                          ? ''
+                          : currentFood.calorie.toString() + ' Calorie',
                       textAlign: TextAlign.right,
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
@@ -249,7 +277,7 @@ class NutritionDetailView extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 4, right: 75),
                     child: Text(
-                      '1 Bun',
+                      currentFood == null ? '' : currentFood.servingSize,
                       textAlign: TextAlign.right,
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
@@ -646,6 +674,17 @@ class NutritionDetailView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _saveAll() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> _history = (prefs.getStringList('history') ?? null);
+    int id = int.tryParse(_history.elementAt(_history.length - 3)) + 1;
+    _history.add(id.toString());
+    _history.add(currentFood.foodName);
+    _history.add(currentFood.calorie.toString());
+    _history.add(DateTime.now().toString());
+    prefs.setStringList('history', _history);
   }
 }
 

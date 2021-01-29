@@ -1,13 +1,15 @@
 import 'package:best_flutter_ui_templates/fitness_app/add_item/captured_view.dart';
 import 'package:best_flutter_ui_templates/fitness_app/add_item/nutrition_detail_view.dart';
-
+import 'package:best_flutter_ui_templates/fitness_app/models/foods_list_data.dart';
 import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
 import 'package:flutter/material.dart';
 
 class NutritionScreen extends StatefulWidget {
-  const NutritionScreen({Key key, this.animationController}) : super(key: key);
+  const NutritionScreen({Key key, this.animationController, this.foodName})
+      : super(key: key);
 
   final AnimationController animationController;
+  final String foodName;
   @override
   _NutritionScreenState createState() => _NutritionScreenState();
 }
@@ -16,12 +18,18 @@ class _NutritionScreenState extends State<NutritionScreen>
     with TickerProviderStateMixin {
   Animation<double> topBarAnimation;
 
+  FoodsListData currentFood;
   List<Widget> listViews = <Widget>[];
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
 
   @override
   void initState() {
+    setState(() {
+      FoodsListData.foodDatabase.forEach((element) {
+        if (element.foodName == widget.foodName) currentFood = element;
+      });
+    });
     topBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
             parent: widget.animationController,
@@ -53,7 +61,20 @@ class _NutritionScreenState extends State<NutritionScreen>
     super.initState();
   }
 
-  void addAllListData() {
+  @override
+  void didUpdateWidget(NutritionScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    setState(() {
+      FoodsListData.foodDatabase.forEach((element) {
+        if (element.foodName == widget.foodName) currentFood = element;
+      });
+      listViews.clear();
+      addAllListData();
+    });
+  }
+
+  void addAllListData() async {
     const int count = 9;
     listViews.add(
       CapturedView(
@@ -71,6 +92,7 @@ class _NutritionScreenState extends State<NutritionScreen>
             curve:
                 Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
         animationController: widget.animationController,
+        foodData: currentFood,
       ),
     );
   }
@@ -89,8 +111,6 @@ class _NutritionScreenState extends State<NutritionScreen>
         body: Stack(
           children: <Widget>[
             getMainListViewUI(),
-
-            //getAppBarUI(),
             SizedBox(
               height: MediaQuery.of(context).padding.bottom + 24,
             )
@@ -110,8 +130,7 @@ class _NutritionScreenState extends State<NutritionScreen>
           return ListView.builder(
             controller: scrollController,
             padding: EdgeInsets.only(
-              top: 24, //AppBar().preferredSize.height,
-              //+ MediaQuery.of(context).padding.top,
+              top: 24,
               bottom: 62 + MediaQuery.of(context).padding.bottom,
             ),
             itemCount: listViews.length,

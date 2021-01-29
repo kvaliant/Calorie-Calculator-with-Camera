@@ -6,7 +6,10 @@ import '../fintness_app_theme.dart';
 class RestrictionDetailView extends StatelessWidget {
   const RestrictionDetailView({
     Key key,
+    this.foodName,
   }) : super(key: key);
+
+  final String foodName;
 
   @override
   Widget build(BuildContext context) {

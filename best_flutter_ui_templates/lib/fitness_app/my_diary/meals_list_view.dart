@@ -150,16 +150,6 @@ class _MealsListViewState extends State<MealsListView>
     );
   }
 
-  _saveAll() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> _test1 = (prefs.getStringList('history') ?? null);
-    _test1.add('1');
-    _test1.add('Pizza');
-    _test1.add('300');
-    _test1.add(DateTime.now().toString());
-    prefs.setStringList('history', _test1);
-  }
-
   int keyPointer; //id, name, cal, timeStamp
   Future<List<FoodObject>> _readHistory(DateTime dateTime) async {
     //_saveAll();

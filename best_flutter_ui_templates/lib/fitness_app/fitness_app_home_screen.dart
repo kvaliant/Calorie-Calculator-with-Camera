@@ -1,3 +1,4 @@
+import 'package:best_flutter_ui_templates/fitness_app/add_item/nutrition_screen.dart';
 import 'package:best_flutter_ui_templates/fitness_app/add_item/scan_screen.dart';
 import 'package:best_flutter_ui_templates/fitness_app/models/tabIcon_data.dart';
 import 'package:best_flutter_ui_templates/fitness_app/traning/training_screen.dart';
@@ -97,8 +98,10 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                     currentMiddleButton = middleButtonEnum.capture;
                     break;
                   case middleButtonEnum.capture:
-                    tabBody =
-                        ChooseScreen(animationController: animationController);
+                    tabBody = NutritionScreen(
+                      animationController: animationController,
+                      foodName: 'Hamburger',
+                    );
                     currentMiddleButton = middleButtonEnum.retry;
                     break;
                   case middleButtonEnum.retry:

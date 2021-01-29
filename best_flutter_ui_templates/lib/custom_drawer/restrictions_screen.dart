@@ -1,6 +1,7 @@
 import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:best_flutter_ui_templates/fitness_app/models/restrictions_list_data.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RestrictionsScreen extends StatefulWidget {
   @override
@@ -11,8 +12,31 @@ class _RestrictionsScreenState extends State<RestrictionsScreen> {
   List<RestrictionsListData> restrictionsList =
       RestrictionsListData.restrictionsList;
 
+  List<String> _restrictionsActiveList = [];
+
+  _loadAll() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _restrictionsActiveList =
+          (prefs.getStringList('restrictionsActiveList') ?? []);
+      for (int i = 0; i < restrictionsList.length; i++) {
+        _restrictionsActiveList.add('false');
+      }
+    });
+  }
+
+  //Incrementing counter after click
+  Future<bool> _saveAll() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('restrictionsActiveList', _restrictionsActiveList);
+    return true;
+  }
+
   @override
   void initState() {
+    setState(() {
+      _loadAll();
+    });
     super.initState();
   }
 
@@ -76,13 +100,15 @@ class _RestrictionsScreenState extends State<RestrictionsScreen> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
+                              _saveAll();
+                              Navigator.of(context).push(ShowOverlay());
                               FocusScope.of(context).requestFocus(FocusNode());
                             },
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(4.0),
                                 child: Text(
-                                  'Send',
+                                  'Save',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     color: Colors.white,
@@ -122,15 +148,108 @@ class _RestrictionsScreenState extends State<RestrictionsScreen> {
               height: 25,
               child: Column(
                 children: <Widget>[
-                  restrictionsList.elementAt(index).active
-                      ? Icon(Icons.check_box)
-                      : Icon(Icons.check_box_outline_blank),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        _restrictionsActiveList[index] =
+                            _restrictionsActiveList.elementAt(index) == 'true'
+                                ? 'false'
+                                : 'true';
+                      });
+                    },
+                    child: _restrictionsActiveList.elementAt(index) == 'true'
+                        ? Icon(Icons.check_box)
+                        : Icon(Icons.check_box_outline_blank),
+                  ),
                   Text(restrictionsList.elementAt(index).restrictionsName),
                 ],
               ),
             ),
           );
         }),
+      ),
+    );
+  }
+}
+
+class ShowOverlay extends ModalRoute<void> {
+  @override
+  Duration get transitionDuration => Duration(milliseconds: 500);
+
+  @override
+  bool get opaque => false;
+
+  @override
+  bool get barrierDismissible => true;
+
+  @override
+  Color get barrierColor => Colors.black.withOpacity(0.5);
+
+  @override
+  String get barrierLabel => null;
+
+  @override
+  bool get maintainState => true;
+
+  ShowOverlay({
+    Key key,
+  });
+
+  @override
+  Widget buildPage(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
+    // This makes sure that text and other content follows the material style
+    return Material(
+      type: MaterialType.transparency,
+      // make sure that the overlay content is not cut off
+      child: SafeArea(
+        child: _buildOverlayContent(context),
+      ),
+    );
+  }
+
+  Widget _buildOverlayContent(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height - 100,
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Data Sucessfully Saved!',
+            style: TextStyle(
+              fontFamily: AppTheme.fontName,
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+              color: AppTheme.white,
+            ),
+          ),
+          Text(
+            'Press again to continue',
+            style: TextStyle(
+              fontFamily: AppTheme.fontName,
+              fontSize: 16,
+              fontWeight: FontWeight.w200,
+              color: AppTheme.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
+    // You can add your own animations for the overlay content
+    return FadeTransition(
+      opacity: animation,
+      child: ScaleTransition(
+        scale: animation,
+        child: child,
       ),
     );
   }

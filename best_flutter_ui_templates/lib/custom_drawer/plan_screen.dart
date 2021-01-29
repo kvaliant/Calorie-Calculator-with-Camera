@@ -37,7 +37,7 @@ class _PlanScreenState extends State<PlanScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _age = (prefs.getInt('age') ?? null);
-      _gender = (prefs.getInt('gender') ?? null);
+      _gender = (prefs.getInt('gender') ?? 0);
       currentGender = _gender == 0 ? genderEnum.female : genderEnum.male;
       _unitType = (prefs.getBool('unit_type') ?? true);
       currentUnitType = _unitType ? unitTypeEnum.Metric : unitTypeEnum.Imperial;
@@ -76,7 +76,7 @@ class _PlanScreenState extends State<PlanScreen> {
     return false;
   }
 
-  _calculateBMR() async {
+  _calculateBMR() {
     var activityEquationList = [1.2, 1.375, 1.55, 1.725, 1.9];
     if (_age != null && _height != null && _weight != null) {
       _bmr = ((13.397 * _weight + 4.799 * _height - 5.677 * _age) *
@@ -171,8 +171,13 @@ class _PlanScreenState extends State<PlanScreen> {
                             onTap: () {
                               FocusScope.of(context).requestFocus(FocusNode());
                               _saveAll();
-                              _loadAll();
-                              Navigator.of(context).push(ShowOverlay());
+                              if (_age != null &&
+                                  _height != null &&
+                                  _weight != null &&
+                                  _bmr != 0 &&
+                                  _planDailyCalorie != null) {
+                                Navigator.of(context).push(ShowOverlay());
+                              }
                             },
                             child: Center(
                               child: Padding(
@@ -325,6 +330,7 @@ class _PlanScreenState extends State<PlanScreen> {
                       currentGender = value;
                       _calculateBMR();
                     });
+                    FocusScope.of(context).requestFocus(FocusNode());
                   },
                 ),
                 new Text(
@@ -339,6 +345,7 @@ class _PlanScreenState extends State<PlanScreen> {
                       currentGender = value;
                       _calculateBMR();
                     });
+                    FocusScope.of(context).requestFocus(FocusNode());
                   },
                 ),
                 new Text(
@@ -378,6 +385,7 @@ class _PlanScreenState extends State<PlanScreen> {
                       currentUnitType = unitTypeEnum.Imperial;
                       _calculateBMR();
                     });
+                    FocusScope.of(context).requestFocus(FocusNode());
                   },
                   child: Text(
                     "Imperial",
@@ -403,6 +411,7 @@ class _PlanScreenState extends State<PlanScreen> {
                       currentUnitType = unitTypeEnum.Metric;
                       _calculateBMR();
                     });
+                    FocusScope.of(context).requestFocus(FocusNode());
                   },
                   child: Text(
                     "Metric",
@@ -423,8 +432,8 @@ class _PlanScreenState extends State<PlanScreen> {
     );
   }
 
+  var imperialUnitHelper = [0, 0];
   Widget _buildHeightColumn() {
-    var imperialUnitHelper = [0, 0];
     double textBoxWidth = 100;
     double textBoxHeight = 25;
     return Padding(
@@ -520,11 +529,11 @@ class _PlanScreenState extends State<PlanScreen> {
                           onChanged: (String txt) {
                             imperialUnitHelper[0] =
                                 int.tryParse(txt.replaceAll("[^a-zA-Z]", ""));
-                            _height = (imperialUnitHelper[0] * 0.0328084 +
-                                    imperialUnitHelper[1] * 0.393701)
-                                .round();
                           },
                           onEditingComplete: () {
+                            _height = (imperialUnitHelper[0] * 30.48 +
+                                    imperialUnitHelper[1] * 2.54)
+                                .round();
                             setState(() {
                               _calculateBMR();
                             });
@@ -561,7 +570,7 @@ class _PlanScreenState extends State<PlanScreen> {
                           controller: TextEditingController()
                             ..text = _height == null
                                 ? '' + ' in'
-                                : ((((_height % 30.48).floor()) / 2.54).round())
+                                : ((((_height % 30.48).round()) / 2.54).round())
                                         .toString() +
                                     ' in',
                           inputFormatters: [
@@ -570,10 +579,13 @@ class _PlanScreenState extends State<PlanScreen> {
                           keyboardType: TextInputType.numberWithOptions(),
                           maxLines: 1,
                           onChanged: (String txt) {
-                            this._height =
+                            imperialUnitHelper[1] =
                                 int.tryParse(txt.replaceAll("[^a-zA-Z]", ""));
                           },
                           onEditingComplete: () {
+                            _height = (imperialUnitHelper[0] * 30.48 +
+                                    imperialUnitHelper[1] * 2.54)
+                                .round();
                             setState(() {
                               _calculateBMR();
                             });
@@ -586,7 +598,7 @@ class _PlanScreenState extends State<PlanScreen> {
                           ),
                           cursorColor: Colors.blue,
                           decoration: InputDecoration(
-                              border: InputBorder.none, hintText: 'a'),
+                              border: InputBorder.none, hintText: ''),
                         ),
                       ),
                     ),
@@ -689,6 +701,7 @@ class _PlanScreenState extends State<PlanScreen> {
             _activities = activityList.indexOf(txt);
             _calculateBMR();
           });
+          FocusScope.of(context).requestFocus(FocusNode());
         },
         items: activityList.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
@@ -730,7 +743,8 @@ class _PlanScreenState extends State<PlanScreen> {
                         onTap: () {
                           setState(() {
                             currentSelectedPlan = 0;
-                            _planDailyCalorie = 0123;
+
+                            _planDailyCalorie = _bmr == 0 ? '' : _bmr;
                             _calculateBMR();
                           });
                         },
@@ -771,9 +785,10 @@ class _PlanScreenState extends State<PlanScreen> {
                         onTap: () {
                           setState(() {
                             currentSelectedPlan = 1;
-                            _calculateBMR();
+
                             _planDailyCalorie =
                                 _bmr == 0 ? '' : (_bmr * 0.8).ceil();
+                            _calculateBMR();
                           });
                         },
                         child: currentSelectedPlan == 1
@@ -813,8 +828,9 @@ class _PlanScreenState extends State<PlanScreen> {
                         onTap: () {
                           setState(() {
                             currentSelectedPlan = 2;
-                            _calculateBMR();
+
                             _planDailyCalorie = (_bmr * 0.61).ceil();
+                            _calculateBMR();
                           });
                         },
                         child: currentSelectedPlan == 2
@@ -854,8 +870,8 @@ class _PlanScreenState extends State<PlanScreen> {
                         onTap: () {
                           setState(() {
                             currentSelectedPlan = 3;
-                            _calculateBMR();
                             _planDailyCalorie = (_bmr * 1.2).ceil();
+                            _calculateBMR();
                           });
                         },
                         child: currentSelectedPlan == 3

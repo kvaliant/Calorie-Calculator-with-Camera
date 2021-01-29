@@ -1,16 +1,18 @@
 import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:flutter/material.dart';
+
+/*
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:best_flutter_ui_templates/fitness_app/food_history_controller.dart';
-
+*/
 class AboutScreen extends StatefulWidget {
   @override
   _AboutScreenState createState() => _AboutScreenState();
 }
 
 class _AboutScreenState extends State<AboutScreen> {
-  String _jsonContent;
+  //String _jsonContent;
   @override
   void initState() {
     super.initState();
@@ -67,7 +69,7 @@ class _AboutScreenState extends State<AboutScreen> {
       ),
     );
   }
-
+/*
   Future _loadFoodHistoryJson() async {
     String jsonString = await rootBundle.loadString("assets/food_history.json");
     final jsonData = json.decode(jsonString);
@@ -76,4 +78,5 @@ class _AboutScreenState extends State<AboutScreen> {
       _jsonContent = foodHistory.toString();
     });
   }
+*/
 }
