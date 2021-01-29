@@ -100,7 +100,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                   case middleButtonEnum.capture:
                     tabBody = NutritionScreen(
                       animationController: animationController,
-                      foodName: 'Hamburger',
+                      foodName: 'Chicken Bolognise',
                     );
                     currentMiddleButton = middleButtonEnum.retry;
                     break;

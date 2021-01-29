@@ -19,14 +19,21 @@ class NutritionDetailView extends StatefulWidget {
   _NutritionDetailViewState createState() => _NutritionDetailViewState();
 }
 
+FoodsListData currentFood;
+
 class _NutritionDetailViewState extends State<NutritionDetailView> {
-  FoodsListData currentFood;
+  double _currentServing = 0.0;
+  List<String> _restrictions;
+  List<String> currentMatch = [];
+  String currentMatchText = '';
 
   @override
   void initState() {
     setState(() {
       currentFood = widget.foodData;
+      _loadAll();
     });
+
     super.initState();
   }
 
@@ -35,6 +42,7 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
     super.didUpdateWidget(oldWidget);
     setState(() {
       currentFood = widget.foodData;
+      _loadAll();
     });
   }
 
@@ -144,16 +152,27 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
         ),
         child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Text(
-                'This food did not contain any of your food restrictions and alergies*',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-            ),
+            currentMatch.length == 0
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      'This food did not contain any of your food restrictions and alergies*',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      'This food may contain ' + currentMatchText + '*',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Center(
@@ -348,7 +367,12 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              //FocusScope.of(widget.context).requestFocus(FocusNode());
+                              setState(() {
+                                _currentServing = _currentServing - 1.0 < 0
+                                    ? 0.0
+                                    : _currentServing - 0.25;
+                              });
+                              FocusScope.of(context).requestFocus(FocusNode());
                             },
                             child: Center(
                               child: Padding(
@@ -389,7 +413,12 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              //FocusScope.of(widget.context).requestFocus(FocusNode());
+                              setState(() {
+                                _currentServing = _currentServing - 1.0 < 0
+                                    ? 0.0
+                                    : _currentServing - 0.5;
+                              });
+                              FocusScope.of(context).requestFocus(FocusNode());
                             },
                             child: Center(
                               child: Padding(
@@ -430,7 +459,12 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              //FocusScope.of(widget.context).requestFocus(FocusNode());
+                              setState(() {
+                                _currentServing = _currentServing - 1.0 < 0
+                                    ? 0.0
+                                    : _currentServing - 1.0;
+                              });
+                              FocusScope.of(context).requestFocus(FocusNode());
                             },
                             child: Center(
                               child: Padding(
@@ -470,10 +504,24 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
                     padding: const EdgeInsets.only(
                         left: 10, right: 1, top: 10, bottom: 0),
                     child: TextField(
+                      controller: TextEditingController()
+                        ..text = _currentServing == null
+                            ? '0'
+                            : _currentServing.toString(),
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       keyboardType: TextInputType.numberWithOptions(),
                       maxLines: 1,
-                      onChanged: (String txt) {},
+                      onChanged: (String txt) {
+                        _currentServing = double.parse(txt);
+                      },
+                      onEditingComplete: () {
+                        _currentServing =
+                            _currentServing < 0 ? 0.0 : _currentServing;
+                        setState(() {
+                          _currentServing = _currentServing;
+                        });
+                        FocusScope.of(context).requestFocus(FocusNode());
+                      },
                       style: TextStyle(
                         fontFamily: AppTheme.fontName,
                         fontSize: 16,
@@ -505,7 +553,10 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              //FocusScope.of(widget.context).requestFocus(FocusNode());
+                              setState(() {
+                                _currentServing = _currentServing + 1.0;
+                              });
+                              FocusScope.of(context).requestFocus(FocusNode());
                             },
                             child: Center(
                               child: Padding(
@@ -546,7 +597,10 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              //FocusScope.of(widget.context).requestFocus(FocusNode());
+                              setState(() {
+                                _currentServing = _currentServing + 0.5;
+                              });
+                              FocusScope.of(context).requestFocus(FocusNode());
                             },
                             child: Center(
                               child: Padding(
@@ -587,7 +641,10 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              //FocusScope.of(widget.context).requestFocus(FocusNode());
+                              setState(() {
+                                _currentServing = _currentServing + 0.25;
+                              });
+                              FocusScope.of(context).requestFocus(FocusNode());
                             },
                             child: Center(
                               child: Padding(
@@ -622,13 +679,21 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    '303 * 1.5 = 454.5',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  currentFood == null
+                      ? Container()
+                      : Text(
+                          currentFood.calorie.toString() +
+                              ' * ' +
+                              _currentServing.toString() +
+                              ' = ' +
+                              (_currentServing * currentFood.calorie)
+                                  .ceil()
+                                  .toString(),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                 ],
               ),
             ),
@@ -651,7 +716,9 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
-                      //FocusScope.of(widget.context).requestFocus(FocusNode());
+                      if (_currentServing != 0 && currentFood != null)
+                        _saveAll();
+                      FocusScope.of(context).requestFocus(FocusNode());
                     },
                     child: Center(
                       child: Padding(
@@ -679,12 +746,78 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
   _saveAll() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> _history = (prefs.getStringList('history') ?? null);
-    int id = int.tryParse(_history.elementAt(_history.length - 3)) + 1;
+    int id = int.tryParse(_history.elementAt(_history.length - 4));
+    id++;
     _history.add(id.toString());
     _history.add(currentFood.foodName);
-    _history.add(currentFood.calorie.toString());
+    int _totalCalorie = (_currentServing * currentFood.calorie).ceil();
+    _history.add(_totalCalorie.toString());
     _history.add(DateTime.now().toString());
     prefs.setStringList('history', _history);
+  }
+
+  _loadAll() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _restrictions = (prefs.getStringList('restrictions') ?? null);
+    _restrictions = _restrictions == null ? [] : _restrictions;
+    int index = 0;
+    currentMatch = [];
+    currentMatchText = '';
+    _restrictions.forEach((element) {
+      switch (index) {
+        case 0:
+          if (element == 'true' &&
+              element == currentFood.restrictions.halal.toString())
+            currentMatch.add(' Non Halal,');
+          break;
+        case 1:
+          if (element == 'true' &&
+              element == currentFood.restrictions.vegan.toString())
+            currentMatch.add(' Non Vegan,');
+          break;
+        case 2:
+          if (element == 'true' &&
+              element == currentFood.restrictions.hinduism.toString())
+            currentMatch.add(' Non Hinduism,');
+          break;
+        case 3:
+          if (element == 'true' &&
+              element == currentFood.restrictions.prawn.toString())
+            currentMatch.add(' Contain Prawn,');
+          break;
+        case 4:
+          if (element == 'true' &&
+              element == currentFood.restrictions.clam.toString())
+            currentMatch.add(' Contain Clam,');
+          break;
+        case 5:
+          if (element == 'true' &&
+              element == currentFood.restrictions.seafood.toString())
+            currentMatch.add(' Contain Seafood,');
+          break;
+        case 6:
+          if (element == 'true' &&
+              element == currentFood.restrictions.nut.toString())
+            currentMatch.add(' Contain Nut,');
+          break;
+        case 7:
+          if (element == 'true' &&
+              element == currentFood.restrictions.gluten.toString())
+            currentMatch.add(' Contain Gluten,');
+          break;
+        case 8:
+          if (element == 'true' &&
+              element == currentFood.restrictions.lactose.toString())
+            currentMatch.add(' Contain Lactose,');
+          break;
+      }
+      index++;
+    });
+    if (currentMatch.length > 0) {
+      currentMatch.forEach((element) {
+        currentMatchText = currentMatchText + element;
+      });
+    }
   }
 }
 
@@ -732,7 +865,7 @@ class ShowOverlay extends ModalRoute<void> {
 
   Widget _buildOverlayContent(BuildContext context) {
     return Center(
-      child: RestrictionDetailView(),
+      child: RestrictionDetailView(foodData: currentFood),
     );
   }
 

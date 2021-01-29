@@ -41,8 +41,8 @@ class FoodsListData {
       foodID: 1,
       foodName: 'Chicken Bolognise',
       calorie: 300,
-      servingSize: '1 Bowl',
-      restrictions: Restrictions(vegan: false),
+      servingSize: '1 Plate',
+      restrictions: Restrictions(vegan: true, lactose: true),
     ),
   ];
 }

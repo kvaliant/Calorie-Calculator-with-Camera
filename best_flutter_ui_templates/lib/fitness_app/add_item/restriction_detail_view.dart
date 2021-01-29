@@ -1,15 +1,44 @@
 import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:best_flutter_ui_templates/main.dart';
+import 'package:best_flutter_ui_templates/fitness_app/models/foods_list_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import '../fintness_app_theme.dart';
 
-class RestrictionDetailView extends StatelessWidget {
+class RestrictionDetailView extends StatefulWidget {
   const RestrictionDetailView({
     Key key,
-    this.foodName,
+    this.foodData,
   }) : super(key: key);
 
-  final String foodName;
+  final FoodsListData foodData;
+  @override
+  _RestrictionDetailViewState createState() => _RestrictionDetailViewState();
+}
+
+class _RestrictionDetailViewState extends State<RestrictionDetailView> {
+  FoodsListData currentFood;
+  List<String> _restrictions;
+  List<String> currentMatch;
+
+  @override
+  void initState() {
+    setState(() {
+      currentFood = widget.foodData;
+      _loadAll();
+    });
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(RestrictionDetailView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    setState(() {
+      _loadAll();
+      currentFood = widget.foodData;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +91,7 @@ class RestrictionDetailView extends StatelessWidget {
               padding:
                   const EdgeInsets.only(left: 24, right: 24, top: 0, bottom: 0),
               child: Text(
-                'Hamburger',
+                currentFood == null ? '' : currentFood.foodName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   shadows: <Shadow>[
@@ -137,5 +166,88 @@ class RestrictionDetailView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool _getMatchingRestrictions() {
+    int index = 0;
+    currentMatch = [];
+    _restrictions.forEach((element) {
+      switch (index) {
+        case 0:
+          if (element == 'true' &&
+              element == currentFood.restrictions.halal.toString())
+            currentMatch.add('true');
+          else
+            currentMatch.add('false');
+          break;
+        case 1:
+          if (element == 'true' &&
+              element == currentFood.restrictions.vegan.toString())
+            currentMatch.add('true');
+          else
+            currentMatch.add('false');
+          break;
+        case 2:
+          if (element == 'true' &&
+              element == currentFood.restrictions.hinduism.toString())
+            currentMatch.add('true');
+          else
+            currentMatch.add('false');
+          break;
+        case 3:
+          if (element == 'true' &&
+              element == currentFood.restrictions.prawn.toString())
+            currentMatch.add('true');
+          else
+            currentMatch.add('false');
+          break;
+        case 4:
+          if (element == 'true' &&
+              element == currentFood.restrictions.clam.toString())
+            currentMatch.add('true');
+          else
+            currentMatch.add('false');
+          break;
+        case 5:
+          if (element == 'true' &&
+              element == currentFood.restrictions.seafood.toString())
+            currentMatch.add('true');
+          else
+            currentMatch.add('false');
+          break;
+        case 6:
+          if (element == 'true' &&
+              element == currentFood.restrictions.nut.toString())
+            currentMatch.add('true');
+          else
+            currentMatch.add('false');
+          break;
+        case 7:
+          if (element == 'true' &&
+              element == currentFood.restrictions.gluten.toString())
+            currentMatch.add('true');
+          else
+            currentMatch.add('false');
+          break;
+        case 8:
+          if (element == 'true' &&
+              element == currentFood.restrictions.lactose.toString())
+            currentMatch.add('true');
+          else
+            currentMatch.add('false');
+          break;
+      }
+      index++;
+    });
+    if (currentMatch.length > 0) {
+      return true;
+    }
+    return false;
+  }
+
+  _loadAll() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _restrictions = (prefs.getStringList('restrictions') ?? null);
+    _restrictions = _restrictions == null ? [] : _restrictions;
   }
 }

@@ -153,7 +153,7 @@ class _MealsListViewState extends State<MealsListView>
   int keyPointer; //id, name, cal, timeStamp
   Future<List<FoodObject>> _readHistory(DateTime dateTime) async {
     //_saveAll();
-    dateTime == null ? dateTime = DateTime.now() : null;
+    if (dateTime == null) dateTime = DateTime.now();
     keyPointer = 0;
     List<FoodObject> foodList;
     foodList = <FoodObject>[];
@@ -256,7 +256,7 @@ class MealsView extends StatelessWidget {
                             ),
                             Text(
                               foodList.timeStamp.hour.toString() +
-                                  '' +
+                                  ':' +
                                   foodList.timeStamp.minute.toString(),
                               style: TextStyle(
                                 fontFamily: FitnessAppTheme.fontName,
