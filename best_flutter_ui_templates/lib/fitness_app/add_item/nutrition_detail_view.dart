@@ -31,7 +31,6 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
   void initState() {
     setState(() {
       currentFood = widget.foodData;
-      _loadAll();
     });
 
     super.initState();
@@ -42,7 +41,6 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
     super.didUpdateWidget(oldWidget);
     setState(() {
       currentFood = widget.foodData;
-      _loadAll();
     });
   }
 
@@ -152,27 +150,49 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
         ),
         child: Column(
           children: <Widget>[
-            currentMatch.length == 0
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      'This food did not contain any of your food restrictions and alergies*',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
+            Container(
+              child: FutureBuilder<String>(
+                future: _loadAll(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  List<Widget> children;
+                  if (snapshot.hasData) {
+                    children = <Widget>[
+                      snapshot.data.toString() == 'no'
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                'This food did not contain any of your food restrictions and alergies*',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                'This food may be' +
+                                    snapshot.data.toString() +
+                                    '*',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            )
+                    ];
+                  }
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: children,
                     ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      'This food may contain ' + currentMatchText + '*',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
+                  );
+                },
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Center(
@@ -756,9 +776,9 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
     prefs.setStringList('history', _history);
   }
 
-  _loadAll() async {
+  Future<String> _loadAll() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _restrictions = (prefs.getStringList('restrictions') ?? null);
+    _restrictions = (prefs.getStringList('restrictionsActiveList') ?? null);
     _restrictions = _restrictions == null ? [] : _restrictions;
     int index = 0;
     currentMatch = [];
@@ -768,56 +788,64 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
         case 0:
           if (element == 'true' &&
               element == currentFood.restrictions.halal.toString())
-            currentMatch.add(' Non Halal,');
+            currentMatch.add(' Non Halal');
           break;
         case 1:
           if (element == 'true' &&
               element == currentFood.restrictions.vegan.toString())
-            currentMatch.add(' Non Vegan,');
+            currentMatch.add(' Non Vegan');
           break;
         case 2:
           if (element == 'true' &&
               element == currentFood.restrictions.hinduism.toString())
-            currentMatch.add(' Non Hinduism,');
+            currentMatch.add(' Non Hinduism');
           break;
         case 3:
           if (element == 'true' &&
               element == currentFood.restrictions.prawn.toString())
-            currentMatch.add(' Contain Prawn,');
+            currentMatch.add(' Contain Prawn');
           break;
         case 4:
           if (element == 'true' &&
               element == currentFood.restrictions.clam.toString())
-            currentMatch.add(' Contain Clam,');
+            currentMatch.add(' Contain Clam');
           break;
         case 5:
           if (element == 'true' &&
               element == currentFood.restrictions.seafood.toString())
-            currentMatch.add(' Contain Seafood,');
+            currentMatch.add(' Contain Seafood');
           break;
         case 6:
           if (element == 'true' &&
               element == currentFood.restrictions.nut.toString())
-            currentMatch.add(' Contain Nut,');
+            currentMatch.add(' Contain Nut');
           break;
         case 7:
           if (element == 'true' &&
               element == currentFood.restrictions.gluten.toString())
-            currentMatch.add(' Contain Gluten,');
+            currentMatch.add(' Contain Gluten');
           break;
         case 8:
           if (element == 'true' &&
               element == currentFood.restrictions.lactose.toString())
-            currentMatch.add(' Contain Lactose,');
+            currentMatch.add(' Contain Lactose');
           break;
       }
       index++;
     });
+    index = 0;
     if (currentMatch.length > 0) {
       currentMatch.forEach((element) {
-        currentMatchText = currentMatchText + element;
+        if (index == currentMatch.length - 1) {
+          currentMatchText = currentMatchText + element;
+        } else {
+          currentMatchText = currentMatchText + element + ',';
+        }
       });
+    } else {
+      currentMatchText = 'no';
     }
+    return currentMatchText;
   }
 }
 

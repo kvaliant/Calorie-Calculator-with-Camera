@@ -1,7 +1,6 @@
 import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:best_flutter_ui_templates/main.dart';
 import 'package:best_flutter_ui_templates/fitness_app/models/foods_list_data.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import '../fintness_app_theme.dart';
@@ -19,14 +18,12 @@ class RestrictionDetailView extends StatefulWidget {
 
 class _RestrictionDetailViewState extends State<RestrictionDetailView> {
   FoodsListData currentFood;
-  List<String> _restrictions;
   List<String> currentMatch;
 
   @override
   void initState() {
     setState(() {
       currentFood = widget.foodData;
-      _loadAll();
     });
     super.initState();
   }
@@ -35,7 +32,6 @@ class _RestrictionDetailViewState extends State<RestrictionDetailView> {
   void didUpdateWidget(RestrictionDetailView oldWidget) {
     super.didUpdateWidget(oldWidget);
     setState(() {
-      _loadAll();
       currentFood = widget.foodData;
     });
   }
@@ -138,14 +134,51 @@ class _RestrictionDetailViewState extends State<RestrictionDetailView> {
           ),
           child: Column(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  'The',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
+              Container(
+                child: FutureBuilder<String>(
+                  future: _loadAll(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    List<Widget> children;
+                    if (snapshot.hasData) {
+                      children = <Widget>[
+                        snapshot.data.toString() == 'no'
+                            ? Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Center(
+                                  child: Text(
+                                    'This food did not contain any of the food restrictions and alergies classified by this app*',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Center(
+                                  child: Text(
+                                    'This food may be' +
+                                        snapshot.data.toString() +
+                                        '*',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                ),
+                              )
+                      ];
+                    }
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: children,
+                      ),
+                    );
+                  },
                 ),
               ),
               Container(
@@ -156,7 +189,7 @@ class _RestrictionDetailViewState extends State<RestrictionDetailView> {
                     '*Different recipie might contain different ingredient',
                     textAlign: TextAlign.end,
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 12,
                     ),
                   ),
                 ),
@@ -168,86 +201,39 @@ class _RestrictionDetailViewState extends State<RestrictionDetailView> {
     );
   }
 
-  bool _getMatchingRestrictions() {
+  Future<String> _loadAll() async {
     int index = 0;
     currentMatch = [];
-    _restrictions.forEach((element) {
-      switch (index) {
-        case 0:
-          if (element == 'true' &&
-              element == currentFood.restrictions.halal.toString())
-            currentMatch.add('true');
-          else
-            currentMatch.add('false');
-          break;
-        case 1:
-          if (element == 'true' &&
-              element == currentFood.restrictions.vegan.toString())
-            currentMatch.add('true');
-          else
-            currentMatch.add('false');
-          break;
-        case 2:
-          if (element == 'true' &&
-              element == currentFood.restrictions.hinduism.toString())
-            currentMatch.add('true');
-          else
-            currentMatch.add('false');
-          break;
-        case 3:
-          if (element == 'true' &&
-              element == currentFood.restrictions.prawn.toString())
-            currentMatch.add('true');
-          else
-            currentMatch.add('false');
-          break;
-        case 4:
-          if (element == 'true' &&
-              element == currentFood.restrictions.clam.toString())
-            currentMatch.add('true');
-          else
-            currentMatch.add('false');
-          break;
-        case 5:
-          if (element == 'true' &&
-              element == currentFood.restrictions.seafood.toString())
-            currentMatch.add('true');
-          else
-            currentMatch.add('false');
-          break;
-        case 6:
-          if (element == 'true' &&
-              element == currentFood.restrictions.nut.toString())
-            currentMatch.add('true');
-          else
-            currentMatch.add('false');
-          break;
-        case 7:
-          if (element == 'true' &&
-              element == currentFood.restrictions.gluten.toString())
-            currentMatch.add('true');
-          else
-            currentMatch.add('false');
-          break;
-        case 8:
-          if (element == 'true' &&
-              element == currentFood.restrictions.lactose.toString())
-            currentMatch.add('true');
-          else
-            currentMatch.add('false');
-          break;
-      }
-      index++;
-    });
+    String currentMatchText = '';
+    if ('true' == currentFood.restrictions.halal.toString())
+      currentMatch.add(' Non Halal');
+    if ('true' == currentFood.restrictions.vegan.toString())
+      currentMatch.add(' Non Vegan');
+    if ('true' == currentFood.restrictions.hinduism.toString())
+      currentMatch.add(' Non Hinduism');
+    if ('true' == currentFood.restrictions.prawn.toString())
+      currentMatch.add(' Contain Prawn');
+    if ('true' == currentFood.restrictions.clam.toString())
+      currentMatch.add(' Contain Clam');
+    if ('true' == currentFood.restrictions.seafood.toString())
+      currentMatch.add(' Contain Seafood');
+    if ('true' == currentFood.restrictions.nut.toString())
+      currentMatch.add(' Contain Nut');
+    if ('true' == currentFood.restrictions.gluten.toString())
+      currentMatch.add(' Contain Gluten');
+    if ('true' == currentFood.restrictions.lactose.toString())
+      currentMatch.add(' Contain Lactose');
     if (currentMatch.length > 0) {
-      return true;
+      currentMatch.forEach((element) {
+        if (index == currentMatch.length - 1) {
+          currentMatchText = currentMatchText + element;
+        } else {
+          currentMatchText = currentMatchText + element + ',';
+        }
+      });
+    } else {
+      currentMatchText = 'no';
     }
-    return false;
-  }
-
-  _loadAll() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _restrictions = (prefs.getStringList('restrictions') ?? null);
-    _restrictions = _restrictions == null ? [] : _restrictions;
+    return currentMatchText;
   }
 }
