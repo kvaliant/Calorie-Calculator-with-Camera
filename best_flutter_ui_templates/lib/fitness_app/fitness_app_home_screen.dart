@@ -16,15 +16,15 @@ class FitnessAppHomeScreen extends StatefulWidget {
   _FitnessAppHomeScreenState createState() => _FitnessAppHomeScreenState();
 }
 
+Widget tabBody = Container(
+  color: FitnessAppTheme.background,
+);
+
 class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     with TickerProviderStateMixin {
   AnimationController animationController;
 
   List<TabIconData> tabIconsList = TabIconData.tabIconsList;
-
-  Widget tabBody = Container(
-    color: FitnessAppTheme.background,
-  );
 
   middleButtonEnum currentMiddleButton = middleButtonEnum.add;
 

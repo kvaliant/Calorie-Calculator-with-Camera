@@ -1,5 +1,6 @@
 import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:best_flutter_ui_templates/main.dart';
+import 'package:best_flutter_ui_templates/fitness_app/image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import '../fintness_app_theme.dart';
 
@@ -91,24 +92,14 @@ class CameraView extends StatelessWidget {
                     ],
                   ),
                   Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.all(0),
                     child: Container(
-                      height: 300,
+                      height: 350,
                       width: 300,
                       decoration: BoxDecoration(
-                        color: AppTheme.white,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(68.0),
-                            bottomLeft: Radius.circular(68.0),
-                            bottomRight: Radius.circular(68.0),
-                            topRight: Radius.circular(68.0)),
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                              color: FitnessAppTheme.grey.withOpacity(0.6),
-                              offset: Offset(1.1, 1.1),
-                              blurRadius: 10.0),
-                        ],
+                        color: Colors.transparent,
                       ),
+                      child: CameraModule(),
                     ),
                   ),
                 ],
