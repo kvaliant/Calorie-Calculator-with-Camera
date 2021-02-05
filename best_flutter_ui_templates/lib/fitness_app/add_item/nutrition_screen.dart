@@ -2,12 +2,15 @@ import 'package:best_flutter_ui_templates/fitness_app/add_item/captured_view.dar
 import 'package:best_flutter_ui_templates/fitness_app/add_item/nutrition_detail_view.dart';
 import 'package:best_flutter_ui_templates/fitness_app/models/foods_list_data.dart';
 import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 
 class NutritionScreen extends StatefulWidget {
-  const NutritionScreen({Key key, this.animationController, this.foodName})
+  const NutritionScreen(
+      {Key key, this.animationController, this.foodName, this.imageFile})
       : super(key: key);
 
+  final PickedFile imageFile;
   final AnimationController animationController;
   final String foodName;
   @override
@@ -83,6 +86,7 @@ class _NutritionScreenState extends State<NutritionScreen>
             curve:
                 Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
         animationController: widget.animationController,
+        imageFile: widget.imageFile,
       ),
     );
     listViews.add(

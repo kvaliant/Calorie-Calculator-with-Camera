@@ -101,13 +101,14 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                     tabBody =
                         ScanScreen(animationController: animationController);
                     currentMiddleButton = middleButtonEnum.capture;
+                    _imageFile = null;
                     break;
                   case middleButtonEnum.capture:
                     if (_imageFile != null) {
                       tabBody = ChooseScreen(
                         animationController: animationController,
                         imageFile: _imageFile,
-                        addClick: (String name) {
+                        addClick: (String txt) {
                           animationController.reverse().then<dynamic>((data) {
                             if (!mounted) {
                               return;
@@ -115,7 +116,8 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                             setState(() {
                               tabBody = NutritionScreen(
                                 animationController: animationController,
-                                foodName: name,
+                                foodName: txt,
+                                imageFile: _imageFile,
                               );
                             });
                           });
@@ -138,6 +140,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                     tabBody =
                         ChooseScreen(animationController: animationController);
                     currentMiddleButton = middleButtonEnum.add;
+                    _imageFile = null;
                     break;
                   default:
                 }

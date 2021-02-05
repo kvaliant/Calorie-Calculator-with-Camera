@@ -82,13 +82,21 @@ class _ChooseScreenState extends State<ChooseScreen>
       ),
     );
     listViews.add(
-      SuggestionView(
-        mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
-            CurvedAnimation(
-                parent: widget.animationController,
-                curve: Interval((1 / count) * 1, 1.0,
-                    curve: Curves.fastOutSlowIn))),
-        mainScreenAnimationController: widget.animationController,
+      InkWell(
+        /*onTap: () {
+          widget.addClick('Chicken Bolognise');
+        }, */
+        child: SuggestionView(
+          mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(
+                  parent: widget.animationController,
+                  curve: Interval((1 / count) * 1, 1.0,
+                      curve: Curves.fastOutSlowIn))),
+          mainScreenAnimationController: widget.animationController,
+          addClick: (String txt) {
+            widget.addClick(txt);
+          },
+        ),
       ),
     );
   }
@@ -251,9 +259,7 @@ class _ChooseScreenState extends State<ChooseScreen>
                                 highlightColor: Colors.transparent,
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(32.0)),
-                                onTap: () {
-                                  widget.addClick('Chicken Bolognise');
-                                },
+                                onTap: () {},
                                 child: Center(
                                   child: Icon(
                                     Icons.keyboard_arrow_right,

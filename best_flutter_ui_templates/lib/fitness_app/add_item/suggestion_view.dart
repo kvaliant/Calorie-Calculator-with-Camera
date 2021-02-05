@@ -2,13 +2,17 @@ import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
 import 'package:flutter/material.dart';
 
-final List suggestionListData = ['Hamburger', 'Cheese burger'];
+final List suggestionListData = ['Hamburger', 'Chicken Bolognise'];
 
 class SuggestionView extends StatefulWidget {
-  const SuggestionView(
-      {Key key, this.mainScreenAnimationController, this.mainScreenAnimation})
-      : super(key: key);
+  const SuggestionView({
+    Key key,
+    this.mainScreenAnimationController,
+    this.mainScreenAnimation,
+    this.addClick,
+  }) : super(key: key);
 
+  final Function addClick;
   final AnimationController mainScreenAnimationController;
   final Animation<dynamic> mainScreenAnimation;
 
@@ -67,11 +71,17 @@ class _SuggestionViewState extends State<SuggestionView>
                               curve: Interval((1 / count) * index, 1.0,
                                   curve: Curves.fastOutSlowIn)));
                   animationController.forward();
-
-                  return SuggestionItem(
-                    suggestionListData: suggestionListData[index],
-                    animation: animation,
-                    animationController: animationController,
+                  return Container(
+                    child: InkWell(
+                      onTap: () {
+                        widget.addClick(suggestionListData[index]);
+                      },
+                      child: SuggestionItem(
+                        suggestionListData: suggestionListData[index],
+                        animation: animation,
+                        animationController: animationController,
+                      ),
+                    ),
                   );
                 },
               ),
