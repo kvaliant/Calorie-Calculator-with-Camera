@@ -1,19 +1,25 @@
 import 'package:best_flutter_ui_templates/fitness_app/add_item/nutrition_screen.dart';
+import 'package:best_flutter_ui_templates/fitness_app/add_item/choose_screen.dart';
 import 'package:best_flutter_ui_templates/fitness_app/add_item/scan_screen.dart';
 import 'package:best_flutter_ui_templates/fitness_app/models/tabIcon_data.dart';
 import 'package:best_flutter_ui_templates/fitness_app/traning/training_screen.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'bottom_navigation_view/bottom_bar_view.dart';
 import 'fintness_app_theme.dart';
 import 'my_diary/my_diary_screen.dart';
-import 'package:best_flutter_ui_templates/fitness_app/add_item/choose_screen.dart';
-//import 'package:best_flutter_ui_templates/fitness_app/add_item/nutrition_screen.dart';
 
 enum middleButtonEnum { add, capture, retry }
 
 class FitnessAppHomeScreen extends StatefulWidget {
   @override
   _FitnessAppHomeScreenState createState() => _FitnessAppHomeScreenState();
+}
+
+PickedFile _imageFile;
+
+void setFunctionImageFile(PickedFile tempImageFile) {
+  _imageFile = tempImageFile;
 }
 
 Widget tabBody = Container(
@@ -23,7 +29,6 @@ Widget tabBody = Container(
 class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     with TickerProviderStateMixin {
   AnimationController animationController;
-
   List<TabIconData> tabIconsList = TabIconData.tabIconsList;
 
   middleButtonEnum currentMiddleButton = middleButtonEnum.add;
@@ -98,11 +103,23 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                     currentMiddleButton = middleButtonEnum.capture;
                     break;
                   case middleButtonEnum.capture:
+                    if (_imageFile != null) {
+                      tabBody = ChooseScreen(
+                        animationController: animationController,
+                        imageFile: _imageFile,
+                      );
+                      currentMiddleButton = middleButtonEnum.retry;
+                    } else {
+                      tabBody =
+                          ScanScreen(animationController: animationController);
+                    }
+                    /*
                     tabBody = NutritionScreen(
                       animationController: animationController,
                       foodName: 'Chicken Bolognise',
                     );
-                    currentMiddleButton = middleButtonEnum.retry;
+                    */
+
                     break;
                   case middleButtonEnum.retry:
                     tabBody =

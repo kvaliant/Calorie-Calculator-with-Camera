@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
 import 'package:best_flutter_ui_templates/fitness_app/models/tabIcon_data.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:best_flutter_ui_templates/main.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +9,12 @@ import '../../main.dart';
 import '../models/tabIcon_data.dart';
 
 enum middleButtonEnum { add, capture, retry }
+
+PickedFile _imageFile;
+
+void setIconImageFile(PickedFile tempImageFile) {
+  _imageFile = tempImageFile;
+}
 
 class BottomBarView extends StatefulWidget {
   const BottomBarView(
@@ -175,7 +182,9 @@ class _BottomBarViewState extends State<BottomBarView>
                                 currentMiddleButton = middleButtonEnum.capture;
                                 break;
                               case middleButtonEnum.capture:
-                                currentMiddleButton = middleButtonEnum.retry;
+                                if (_imageFile != null) {
+                                  currentMiddleButton = middleButtonEnum.retry;
+                                }
                                 break;
                               case middleButtonEnum.retry:
                                 currentMiddleButton = middleButtonEnum.capture;
@@ -190,7 +199,7 @@ class _BottomBarViewState extends State<BottomBarView>
                                 ? Icons.add
                                 : currentMiddleButton ==
                                         middleButtonEnum.capture
-                                    ? Icons.camera
+                                    ? Icons.navigate_next
                                     : currentMiddleButton ==
                                             middleButtonEnum.retry
                                         ? Icons.loop
