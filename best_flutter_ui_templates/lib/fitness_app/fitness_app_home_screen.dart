@@ -107,6 +107,19 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                       tabBody = ChooseScreen(
                         animationController: animationController,
                         imageFile: _imageFile,
+                        addClick: (String name) {
+                          animationController.reverse().then<dynamic>((data) {
+                            if (!mounted) {
+                              return;
+                            }
+                            setState(() {
+                              tabBody = NutritionScreen(
+                                animationController: animationController,
+                                foodName: name,
+                              );
+                            });
+                          });
+                        },
                       );
                       currentMiddleButton = middleButtonEnum.retry;
                     } else {

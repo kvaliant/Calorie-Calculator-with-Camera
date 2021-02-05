@@ -6,9 +6,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 
 class ChooseScreen extends StatefulWidget {
-  const ChooseScreen({Key key, this.animationController, this.imageFile})
+  const ChooseScreen(
+      {Key key, this.animationController, this.imageFile, this.addClick})
       : super(key: key);
 
+  final Function addClick;
   final PickedFile imageFile;
   final AnimationController animationController;
   @override
@@ -249,7 +251,9 @@ class _ChooseScreenState extends State<ChooseScreen>
                                 highlightColor: Colors.transparent,
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(32.0)),
-                                onTap: () {},
+                                onTap: () {
+                                  widget.addClick('Chicken Bolognise');
+                                },
                                 child: Center(
                                   child: Icon(
                                     Icons.keyboard_arrow_right,
