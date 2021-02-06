@@ -9,8 +9,6 @@ import 'bottom_navigation_view/bottom_bar_view.dart';
 import 'fintness_app_theme.dart';
 import 'my_diary/my_diary_screen.dart';
 
-enum middleButtonEnum { add, capture, retry }
-
 class FitnessAppHomeScreen extends StatefulWidget {
   @override
   _FitnessAppHomeScreenState createState() => _FitnessAppHomeScreenState();
@@ -30,8 +28,6 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     with TickerProviderStateMixin {
   AnimationController animationController;
   List<TabIconData> tabIconsList = TabIconData.tabIconsList;
-
-  middleButtonEnum currentMiddleButton = middleButtonEnum.add;
 
   @override
   void initState() {
@@ -90,7 +86,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
         ),
         BottomBarView(
           tabIconsList: tabIconsList,
-          addClick: () {
+          addClick: (middleButtonEnum currentMiddleButton) {
             animationController.reverse().then<dynamic>((data) {
               if (!mounted) {
                 return;
@@ -98,10 +94,9 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
               setState(() {
                 switch (currentMiddleButton) {
                   case middleButtonEnum.add:
+                    _imageFile = null;
                     tabBody =
                         ScanScreen(animationController: animationController);
-                    currentMiddleButton = middleButtonEnum.capture;
-                    _imageFile = null;
                     break;
                   case middleButtonEnum.capture:
                     if (_imageFile != null) {
@@ -123,24 +118,15 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                           });
                         },
                       );
-                      currentMiddleButton = middleButtonEnum.retry;
                     } else {
                       tabBody =
                           ScanScreen(animationController: animationController);
                     }
-                    /*
-                    tabBody = NutritionScreen(
-                      animationController: animationController,
-                      foodName: 'Chicken Bolognise',
-                    );
-                    */
-
                     break;
                   case middleButtonEnum.retry:
+                    _imageFile = null;
                     tabBody =
                         ChooseScreen(animationController: animationController);
-                    currentMiddleButton = middleButtonEnum.add;
-                    _imageFile = null;
                     break;
                   default:
                 }
@@ -148,8 +134,8 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
             });
           },
           changeIndex: (int index) {
-            currentMiddleButton = middleButtonEnum.add;
             if (index == 0 || index == 2) {
+              _imageFile = null;
               animationController.reverse().then<dynamic>((data) {
                 if (!mounted) {
                   return;

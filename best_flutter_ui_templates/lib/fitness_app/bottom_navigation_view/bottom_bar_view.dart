@@ -177,21 +177,31 @@ class _BottomBarViewState extends State<BottomBarView>
                           highlightColor: Colors.transparent,
                           focusColor: Colors.transparent,
                           onTap: () {
+                            widget.addClick(currentMiddleButton);
                             switch (currentMiddleButton) {
                               case middleButtonEnum.add:
-                                currentMiddleButton = middleButtonEnum.capture;
+                                setState(() {
+                                  currentMiddleButton =
+                                      middleButtonEnum.capture;
+                                });
+
                                 break;
                               case middleButtonEnum.capture:
                                 if (_imageFile != null) {
-                                  currentMiddleButton = middleButtonEnum.retry;
+                                  setState(() {
+                                    currentMiddleButton =
+                                        middleButtonEnum.retry;
+                                  });
                                 }
                                 break;
                               case middleButtonEnum.retry:
-                                currentMiddleButton = middleButtonEnum.capture;
+                                setState(() {
+                                  currentMiddleButton =
+                                      middleButtonEnum.capture;
+                                });
                                 break;
                               default:
                             }
-                            widget.addClick();
                             removeAllSelection();
                           },
                           child: Icon(
@@ -222,6 +232,7 @@ class _BottomBarViewState extends State<BottomBarView>
 
   void setRemoveAllSelection(TabIconData tabIconData) {
     if (!mounted) return;
+    _imageFile = null;
     currentMiddleButton = middleButtonEnum.add;
     setState(() {
       widget.tabIconsList.forEach((TabIconData tab) {
@@ -235,6 +246,7 @@ class _BottomBarViewState extends State<BottomBarView>
 
   void removeAllSelection() {
     if (!mounted) return;
+    _imageFile = null;
     setState(() {
       widget.tabIconsList.forEach((TabIconData tab) {
         tab.isSelected = false;
