@@ -25,10 +25,13 @@ class CameraView extends StatelessWidget {
               padding: const EdgeInsets.only(
                   left: 24, right: 24, top: 16, bottom: 18),
               child: Stack(
-                alignment: Alignment.center,
+                alignment: Alignment.topCenter,
                 children: <Widget>[
                   Column(
                     children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 75),
+                      ),
                       Container(
                         height: 50,
                         width: 450,
