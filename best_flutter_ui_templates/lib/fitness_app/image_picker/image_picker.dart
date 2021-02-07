@@ -42,7 +42,6 @@ class _CameraModuleState extends State<CameraModule> {
           maxHeight: maxHeight,
           imageQuality: quality,
         );
-        setIconImageFile(pickedFile);
         setFunctionImageFile(pickedFile);
         setState(() {
           _imageFile = pickedFile;
@@ -343,6 +342,7 @@ class _CameraModuleState extends State<CameraModule> {
                     child: InkWell(
                       onTap: () {
                         widget.addClick(snapshot.data.toString());
+                        setMiddleButtonRetry();
                       },
                       child: Padding(
                         padding: EdgeInsets.only(

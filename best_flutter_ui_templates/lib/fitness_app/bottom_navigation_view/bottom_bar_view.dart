@@ -10,10 +10,10 @@ import '../models/tabIcon_data.dart';
 
 enum middleButtonEnum { add, capture, retry }
 
-PickedFile _imageFile;
+middleButtonEnum currentMiddleButton = middleButtonEnum.add;
 
-void setIconImageFile(PickedFile tempImageFile) {
-  _imageFile = tempImageFile;
+void setMiddleButtonRetry() {
+  currentMiddleButton = middleButtonEnum.retry;
 }
 
 class BottomBarView extends StatefulWidget {
@@ -31,8 +31,6 @@ class BottomBarView extends StatefulWidget {
 class _BottomBarViewState extends State<BottomBarView>
     with TickerProviderStateMixin {
   AnimationController animationController;
-
-  middleButtonEnum currentMiddleButton = middleButtonEnum.add;
 
   @override
   void initState() {
@@ -58,12 +56,14 @@ class _BottomBarViewState extends State<BottomBarView>
                 color: FitnessAppTheme.white,
                 elevation: 16.0,
                 clipper: TabClipper(
-                    radius: Tween<double>(begin: 0.0, end: 1.0)
-                            .animate(CurvedAnimation(
-                                parent: animationController,
-                                curve: Curves.fastOutSlowIn))
-                            .value *
-                        38.0),
+                    radius: currentMiddleButton == middleButtonEnum.capture
+                        ? 0
+                        : Tween<double>(begin: 0.0, end: 1.0)
+                                .animate(CurvedAnimation(
+                                    parent: animationController,
+                                    curve: Curves.fastOutSlowIn))
+                                .value *
+                            38.0),
                 child: Column(
                   children: <Widget>[
                     SizedBox(
@@ -82,15 +82,6 @@ class _BottomBarViewState extends State<BottomBarView>
                                     widget.changeIndex(0);
                                   }),
                             ),
-                            Expanded(
-                              child: TabIcons(
-                                  tabIconData: widget.tabIconsList[1],
-                                  removeAllSelect: () {
-                                    setRemoveAllSelection(
-                                        widget.tabIconsList[1]);
-                                    widget.changeIndex(1);
-                                  }),
-                            ),
                             SizedBox(
                               width: Tween<double>(begin: 0.0, end: 1.0)
                                       .animate(CurvedAnimation(
@@ -99,24 +90,7 @@ class _BottomBarViewState extends State<BottomBarView>
                                       .value *
                                   64.0,
                             ),
-                            Expanded(
-                              child: TabIcons(
-                                  tabIconData: widget.tabIconsList[2],
-                                  removeAllSelect: () {
-                                    setRemoveAllSelection(
-                                        widget.tabIconsList[2]);
-                                    widget.changeIndex(2);
-                                  }),
-                            ),
-                            Expanded(
-                              child: TabIcons(
-                                  tabIconData: widget.tabIconsList[3],
-                                  removeAllSelect: () {
-                                    setRemoveAllSelection(
-                                        widget.tabIconsList[3]);
-                                    widget.changeIndex(3);
-                                  }),
-                            ),
+                            Expanded(child: Container()),
                           ],
                         ),
                       ),
@@ -136,94 +110,95 @@ class _BottomBarViewState extends State<BottomBarView>
           child: SizedBox(
             width: 38 * 2.0,
             height: 38 + 62.0,
-            child: Container(
-              alignment: Alignment.topCenter,
-              color: Colors.transparent,
-              child: SizedBox(
-                width: 38 * 2.0,
-                height: 38 * 2.0,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ScaleTransition(
-                    alignment: Alignment.center,
-                    scale: Tween<double>(begin: 0.0, end: 1.0).animate(
-                        CurvedAnimation(
-                            parent: animationController,
-                            curve: Curves.fastOutSlowIn)),
-                    child: Container(
-                      // alignment: Alignment.center,s
-                      decoration: BoxDecoration(
-                        color: FitnessAppTheme.nearlyDarkBlue,
-                        gradient: LinearGradient(
-                            colors: [
-                              FitnessAppTheme.nearlyDarkBlue,
-                              HexColor('#6A88E5'),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight),
-                        shape: BoxShape.circle,
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                              color: FitnessAppTheme.nearlyDarkBlue
-                                  .withOpacity(0.4),
-                              offset: const Offset(8.0, 16.0),
-                              blurRadius: 16.0),
-                        ],
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          splashColor: Colors.white.withOpacity(0.1),
-                          highlightColor: Colors.transparent,
-                          focusColor: Colors.transparent,
-                          onTap: () {
-                            widget.addClick(currentMiddleButton);
-                            switch (currentMiddleButton) {
-                              case middleButtonEnum.add:
-                                setState(() {
-                                  currentMiddleButton =
-                                      middleButtonEnum.capture;
-                                });
+            child: currentMiddleButton == middleButtonEnum.capture
+                ? null
+                : Container(
+                    alignment: Alignment.topCenter,
+                    color: Colors.transparent,
+                    child: SizedBox(
+                      width: 38 * 2.0,
+                      height: 38 * 2.0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ScaleTransition(
+                          alignment: Alignment.center,
+                          scale: Tween<double>(begin: 0.0, end: 1.0).animate(
+                              CurvedAnimation(
+                                  parent: animationController,
+                                  curve: Curves.fastOutSlowIn)),
+                          child: Container(
+                            // alignment: Alignment.center,s
+                            decoration: BoxDecoration(
+                              color: FitnessAppTheme.nearlyDarkBlue,
+                              gradient: LinearGradient(
+                                  colors: [
+                                    FitnessAppTheme.nearlyDarkBlue,
+                                    HexColor('#6A88E5'),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight),
+                              shape: BoxShape.circle,
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                    color: FitnessAppTheme.nearlyDarkBlue
+                                        .withOpacity(0.4),
+                                    offset: const Offset(8.0, 16.0),
+                                    blurRadius: 16.0),
+                              ],
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                splashColor: Colors.white.withOpacity(0.1),
+                                highlightColor: Colors.transparent,
+                                focusColor: Colors.transparent,
+                                onTap: () {
+                                  widget.addClick(currentMiddleButton);
+                                  switch (currentMiddleButton) {
+                                    case middleButtonEnum.add:
+                                      setState(() {
+                                        currentMiddleButton =
+                                            middleButtonEnum.capture;
+                                      });
 
-                                break;
-                              case middleButtonEnum.capture:
-                                if (_imageFile != null) {
-                                  setState(() {
-                                    currentMiddleButton =
-                                        middleButtonEnum.retry;
-                                  });
-                                }
-                                break;
-                              case middleButtonEnum.retry:
-                                setState(() {
-                                  currentMiddleButton =
-                                      middleButtonEnum.capture;
-                                });
-                                break;
-                              default:
-                            }
-                            removeAllSelection();
-                          },
-                          child: Icon(
-                            currentMiddleButton == middleButtonEnum.add
-                                ? Icons.add
-                                : currentMiddleButton ==
-                                        middleButtonEnum.capture
-                                    ? Icons.navigate_next
+                                      break;
+                                    case middleButtonEnum.capture:
+                                      break;
+                                    case middleButtonEnum.retry:
+                                      setState(() {
+                                        currentMiddleButton =
+                                            middleButtonEnum.capture;
+                                      });
+                                      break;
+                                    default:
+                                  }
+                                  removeAllSelection();
+                                },
+                                child: currentMiddleButton ==
+                                        middleButtonEnum.add
+                                    ? Icon(
+                                        Icons.add,
+                                        color: FitnessAppTheme.white,
+                                        size: 32,
+                                      )
                                     : currentMiddleButton ==
-                                            middleButtonEnum.retry
-                                        ? Icons.loop
-                                        : null,
-                            color: FitnessAppTheme.white,
-                            size: 32,
+                                            middleButtonEnum.capture
+                                        ? null
+                                        : currentMiddleButton ==
+                                                middleButtonEnum.retry
+                                            ? Icon(
+                                                Icons.add,
+                                                color: FitnessAppTheme.white,
+                                                size: 32,
+                                              )
+                                            : null,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
           ),
         ),
       ],
@@ -232,7 +207,6 @@ class _BottomBarViewState extends State<BottomBarView>
 
   void setRemoveAllSelection(TabIconData tabIconData) {
     if (!mounted) return;
-    _imageFile = null;
     currentMiddleButton = middleButtonEnum.add;
     setState(() {
       widget.tabIconsList.forEach((TabIconData tab) {
@@ -246,7 +220,6 @@ class _BottomBarViewState extends State<BottomBarView>
 
   void removeAllSelection() {
     if (!mounted) return;
-    _imageFile = null;
     setState(() {
       widget.tabIconsList.forEach((TabIconData tab) {
         tab.isSelected = false;

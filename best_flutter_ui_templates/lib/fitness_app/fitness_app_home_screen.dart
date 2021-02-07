@@ -99,33 +99,20 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                         animationController: animationController,
                         addClick: (String txt) {
                           setState(() {
-                            animationController.reverse().then<dynamic>((data) {
-                              if (!mounted) {
-                                return;
-                              }
-                              tabBody = ChooseScreen(
-                                animationController: animationController,
-                                imageFile: _imageFile,
-                                suggestionString: txt,
-                                addClick: (String txt2) {
-                                  animationController
-                                      .reverse()
-                                      .then<dynamic>((data) {
-                                    if (!mounted) {
-                                      return;
-                                    }
-                                    setState(() {
-                                      tabBody = NutritionScreen(
-                                        animationController:
-                                            animationController,
-                                        foodName: txt2,
-                                        imageFile: _imageFile,
-                                      );
-                                    });
-                                  });
-                                },
-                              );
-                            });
+                            tabBody = ChooseScreen(
+                              animationController: animationController,
+                              imageFile: _imageFile,
+                              suggestionString: txt,
+                              addClick: (String txt2) {
+                                setState(() {
+                                  tabBody = NutritionScreen(
+                                    animationController: animationController,
+                                    foodName: txt2,
+                                    imageFile: _imageFile,
+                                  );
+                                });
+                              },
+                            );
                           });
                         });
                     break;

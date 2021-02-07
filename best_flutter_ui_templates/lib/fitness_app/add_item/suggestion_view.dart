@@ -2,6 +2,7 @@ import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
 import 'package:best_flutter_ui_templates/fitness_app/models/foods_list_data.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
 class SuggestionView extends StatefulWidget {
   const SuggestionView(
@@ -103,9 +104,11 @@ class _SuggestionViewState extends State<SuggestionView>
   }
 
   void getSuggestionListData() {
+    var jsonString = widget.suggestionString.replaceFirst("200", "");
+    var parsedJson = jsonDecode(jsonString);
     suggestionListData = [];
     FoodsListData.foodDatabase.forEach((element) {
-      if (widget.suggestionString.contains(element.foodName)) {
+      if (parsedJson.toString().contains(element.foodName)) {
         suggestionListData.add(element.foodName);
       }
     });
