@@ -95,38 +95,77 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                 switch (currentMiddleButton) {
                   case middleButtonEnum.add:
                     _imageFile = null;
-                    tabBody =
-                        ScanScreen(animationController: animationController);
-                    break;
-                  case middleButtonEnum.capture:
-                    if (_imageFile != null) {
-                      tabBody = ChooseScreen(
+                    tabBody = ScanScreen(
                         animationController: animationController,
-                        imageFile: _imageFile,
                         addClick: (String txt) {
-                          animationController.reverse().then<dynamic>((data) {
-                            if (!mounted) {
-                              return;
-                            }
-                            setState(() {
-                              tabBody = NutritionScreen(
+                          setState(() {
+                            animationController.reverse().then<dynamic>((data) {
+                              if (!mounted) {
+                                return;
+                              }
+                              tabBody = ChooseScreen(
                                 animationController: animationController,
-                                foodName: txt,
                                 imageFile: _imageFile,
+                                suggestionString: txt,
+                                addClick: (String txt2) {
+                                  animationController
+                                      .reverse()
+                                      .then<dynamic>((data) {
+                                    if (!mounted) {
+                                      return;
+                                    }
+                                    setState(() {
+                                      tabBody = NutritionScreen(
+                                        animationController:
+                                            animationController,
+                                        foodName: txt2,
+                                        imageFile: _imageFile,
+                                      );
+                                    });
+                                  });
+                                },
                               );
                             });
                           });
-                        },
-                      );
-                    } else {
-                      tabBody =
-                          ScanScreen(animationController: animationController);
-                    }
+                        });
+                    break;
+                  case middleButtonEnum.capture:
                     break;
                   case middleButtonEnum.retry:
                     _imageFile = null;
-                    tabBody =
-                        ChooseScreen(animationController: animationController);
+                    tabBody = ScanScreen(
+                        animationController: animationController,
+                        addClick: (String txt) {
+                          setState(() {
+                            animationController.reverse().then<dynamic>((data) {
+                              if (!mounted) {
+                                return;
+                              }
+                              tabBody = ChooseScreen(
+                                animationController: animationController,
+                                imageFile: _imageFile,
+                                suggestionString: txt,
+                                addClick: (String txt2) {
+                                  animationController
+                                      .reverse()
+                                      .then<dynamic>((data) {
+                                    if (!mounted) {
+                                      return;
+                                    }
+                                    setState(() {
+                                      tabBody = NutritionScreen(
+                                        animationController:
+                                            animationController,
+                                        foodName: txt2,
+                                        imageFile: _imageFile,
+                                      );
+                                    });
+                                  });
+                                },
+                              );
+                            });
+                          });
+                        });
                     break;
                   default:
                 }

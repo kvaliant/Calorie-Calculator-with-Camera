@@ -1,20 +1,21 @@
 import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
+import 'package:best_flutter_ui_templates/fitness_app/models/foods_list_data.dart';
 import 'package:flutter/material.dart';
 
-final List suggestionListData = ['Hamburger', 'Chicken Bolognise'];
-
 class SuggestionView extends StatefulWidget {
-  const SuggestionView({
-    Key key,
-    this.mainScreenAnimationController,
-    this.mainScreenAnimation,
-    this.addClick,
-  }) : super(key: key);
+  const SuggestionView(
+      {Key key,
+      this.mainScreenAnimationController,
+      this.mainScreenAnimation,
+      this.addClick,
+      this.suggestionString})
+      : super(key: key);
 
   final Function addClick;
   final AnimationController mainScreenAnimationController;
   final Animation<dynamic> mainScreenAnimation;
+  final String suggestionString;
 
   @override
   _SuggestionViewState createState() => _SuggestionViewState();
@@ -23,12 +24,21 @@ class SuggestionView extends StatefulWidget {
 class _SuggestionViewState extends State<SuggestionView>
     with TickerProviderStateMixin {
   AnimationController animationController;
-
+  List<String> suggestionListData;
   @override
   void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 2000), vsync: this);
+    getSuggestionListData();
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(SuggestionView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    setState(() {
+      getSuggestionListData();
+    });
   }
 
   Future<bool> getData() async {
@@ -90,6 +100,15 @@ class _SuggestionViewState extends State<SuggestionView>
         );
       },
     );
+  }
+
+  void getSuggestionListData() {
+    suggestionListData = [];
+    FoodsListData.foodDatabase.forEach((element) {
+      if (widget.suggestionString.contains(element.foodName)) {
+        suggestionListData.add(element.foodName);
+      }
+    });
   }
 }
 

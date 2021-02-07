@@ -5,12 +5,17 @@ import 'package:best_flutter_ui_templates/fitness_app/bottom_navigation_view/bot
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'dart:async';
+import 'dart:io';
 
 import '../fintness_app_theme.dart';
 
 class CameraModule extends StatefulWidget {
-  CameraModule({Key key}) : super(key: key);
+  CameraModule({Key key, this.addClick}) : super(key: key);
+
+  final Function addClick;
 
   @override
   _CameraModuleState createState() => _CameraModuleState();
@@ -162,129 +167,240 @@ class _CameraModuleState extends State<CameraModule> {
             ),
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Semantics(
-              label: 'image_picker_example_from_gallery',
-              child: InkWell(
-                onTap: () {
-                  _onImageButtonPressed(ImageSource.camera, context: context);
-                },
-                /*
-            onPressed: ,
-            heroTag: 'image0',
-            tooltip: 'Pick Image from gallery',
-            */
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(top: 0, bottom: 10, left: 5, right: 10),
-                  child: Container(
-                    height: 50,
-                    width: 130,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        FitnessAppTheme.nearlyDarkBlue,
-                        HexColor("#6F56E8")
-                      ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(48.0),
-                        topRight: Radius.circular(48.0),
-                        bottomLeft: Radius.circular(48.0),
-                        bottomRight: Radius.circular(48.0),
-                      ),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                            color: FitnessAppTheme.grey.withOpacity(0.6),
-                            offset: Offset(1.1, 1.1),
-                            blurRadius: 10.0),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "Camera",
-                          style: TextStyle(
-                            fontFamily: FitnessAppTheme.fontName,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            letterSpacing: 0.2,
-                            color: FitnessAppTheme.white,
-                          ),
-                        ),
-                        Icon(
-                          Icons.camera_alt,
-                          color: FitnessAppTheme.white,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Semantics(
-              label: 'image_picker_example_from_gallery',
-              child: InkWell(
-                onTap: () {
-                  _onImageButtonPressed(ImageSource.gallery, context: context);
-                },
-                /*
-            onPressed: ,
-            heroTag: 'image0',
-            tooltip: 'Pick Image from gallery',
-            */
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(top: 0, bottom: 10, left: 5, right: 10),
-                  child: Container(
-                    height: 50,
-                    width: 130,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        FitnessAppTheme.nearlyDarkBlue,
-                        HexColor("#6F56E8")
-                      ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(48.0),
-                        topRight: Radius.circular(48.0),
-                        bottomLeft: Radius.circular(48.0),
-                        bottomRight: Radius.circular(48.0),
-                      ),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                            color: FitnessAppTheme.grey.withOpacity(0.6),
-                            offset: Offset(1.1, 1.1),
-                            blurRadius: 10.0),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "Galery",
-                          style: TextStyle(
-                            fontFamily: FitnessAppTheme.fontName,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            letterSpacing: 0.2,
-                            color: FitnessAppTheme.white,
-                          ),
-                        ),
-                        Icon(
-                          Icons.photo_size_select_actual_outlined,
-                          color: FitnessAppTheme.white,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+        _buildButton(),
       ],
     );
+  }
+
+  Widget _buildButton() {
+    if (_imageFile == null) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Semantics(
+            label: 'image_picker_example_from_gallery',
+            child: InkWell(
+              onTap: () {
+                _onImageButtonPressed(ImageSource.camera, context: context);
+              },
+              child: Padding(
+                padding:
+                    EdgeInsets.only(top: 0, bottom: 10, left: 5, right: 10),
+                child: Container(
+                  height: 50,
+                  width: 130,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [
+                      FitnessAppTheme.nearlyDarkBlue,
+                      HexColor("#6F56E8")
+                    ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(48.0),
+                      topRight: Radius.circular(48.0),
+                      bottomLeft: Radius.circular(48.0),
+                      bottomRight: Radius.circular(48.0),
+                    ),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: FitnessAppTheme.grey.withOpacity(0.6),
+                          offset: Offset(1.1, 1.1),
+                          blurRadius: 10.0),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "Camera",
+                        style: TextStyle(
+                          fontFamily: FitnessAppTheme.fontName,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          letterSpacing: 0.2,
+                          color: FitnessAppTheme.white,
+                        ),
+                      ),
+                      Icon(
+                        Icons.camera_alt,
+                        color: FitnessAppTheme.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Semantics(
+            label: 'image_picker_example_from_gallery',
+            child: InkWell(
+              onTap: () {
+                _onImageButtonPressed(ImageSource.gallery, context: context);
+              },
+              child: Padding(
+                padding:
+                    EdgeInsets.only(top: 0, bottom: 10, left: 5, right: 10),
+                child: Container(
+                  height: 50,
+                  width: 130,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [
+                      FitnessAppTheme.nearlyDarkBlue,
+                      HexColor("#6F56E8")
+                    ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(48.0),
+                      topRight: Radius.circular(48.0),
+                      bottomLeft: Radius.circular(48.0),
+                      bottomRight: Radius.circular(48.0),
+                    ),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: FitnessAppTheme.grey.withOpacity(0.6),
+                          offset: Offset(1.1, 1.1),
+                          blurRadius: 10.0),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "Galery",
+                        style: TextStyle(
+                          fontFamily: FitnessAppTheme.fontName,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          letterSpacing: 0.2,
+                          color: FitnessAppTheme.white,
+                        ),
+                      ),
+                      Icon(
+                        Icons.photo_size_select_actual_outlined,
+                        color: FitnessAppTheme.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return FutureBuilder<String>(
+          future: _readFileByte(),
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            if (snapshot.hasData) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Semantics(
+                    label: 'retry',
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          _imageFile = null;
+                        });
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            top: 0, bottom: 10, left: 5, right: 10),
+                        child: Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: [
+                                  FitnessAppTheme.nearlyDarkBlue,
+                                  HexColor("#6F56E8")
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(48.0),
+                              topRight: Radius.circular(48.0),
+                              bottomLeft: Radius.circular(48.0),
+                              bottomRight: Radius.circular(48.0),
+                            ),
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(
+                                  color: FitnessAppTheme.grey.withOpacity(0.6),
+                                  offset: Offset(1.1, 1.1),
+                                  blurRadius: 10.0),
+                            ],
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.refresh,
+                              color: FitnessAppTheme.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Semantics(
+                    label: 'next_screen',
+                    child: InkWell(
+                      onTap: () {
+                        widget.addClick(snapshot.data.toString());
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            top: 0, bottom: 10, left: 5, right: 10),
+                        child: Container(
+                          height: 50,
+                          width: 180,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: [
+                                  FitnessAppTheme.nearlyDarkBlue,
+                                  HexColor("#6F56E8")
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(48.0),
+                              topRight: Radius.circular(48.0),
+                              bottomLeft: Radius.circular(48.0),
+                              bottomRight: Radius.circular(48.0),
+                            ),
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(
+                                  color: FitnessAppTheme.grey.withOpacity(0.6),
+                                  offset: Offset(1.1, 1.1),
+                                  blurRadius: 10.0),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "Next",
+                                style: TextStyle(
+                                  fontFamily: FitnessAppTheme.fontName,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  letterSpacing: 0.2,
+                                  color: FitnessAppTheme.white,
+                                ),
+                              ),
+                              Icon(
+                                Icons.chevron_right,
+                                color: FitnessAppTheme.white,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return Container();
+            }
+          });
+    }
   }
 
   Text _getRetrieveErrorWidget() {
@@ -299,6 +415,29 @@ class _CameraModuleState extends State<CameraModule> {
   Future<void> _displayPickImageDialog(
       BuildContext context, OnPickImageCallback onPick) async {
     onPick(250, 250, 100);
+  }
+
+  Future<String> _readFileByte() async {
+    File file = File(_imageFile.path);
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse("https://apinoidea.herokuapp.com/api/multipartImage/"),
+    );
+
+    Map<String, String> headers = {"Content-Type": "application/octet-stream"};
+    request.files.add(
+      http.MultipartFile(
+        'file',
+        file.readAsBytes().asStream(),
+        file.lengthSync(),
+        filename: 'filename',
+        contentType: MediaType('image', 'jpg'),
+      ),
+    );
+    request.headers.addAll(headers);
+    http.Response response =
+        await http.Response.fromStream(await request.send());
+    return response.statusCode.toString() + "\n" + response.body.toString();
   }
 }
 

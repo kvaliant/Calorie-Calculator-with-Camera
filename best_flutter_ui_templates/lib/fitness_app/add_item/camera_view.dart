@@ -7,8 +7,10 @@ import '../fintness_app_theme.dart';
 class CameraView extends StatelessWidget {
   final AnimationController animationController;
   final Animation animation;
+  final Function addClick;
 
-  const CameraView({Key key, this.animationController, this.animation})
+  const CameraView(
+      {Key key, this.animationController, this.animation, this.addClick})
       : super(key: key);
 
   @override
@@ -102,7 +104,11 @@ class CameraView extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.transparent,
                       ),
-                      child: CameraModule(),
+                      child: CameraModule(
+                        addClick: (String txt) {
+                          addClick(txt);
+                        },
+                      ),
                     ),
                   ),
                 ],

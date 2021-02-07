@@ -5,9 +5,11 @@ import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
 import 'package:flutter/material.dart';
 
 class ScanScreen extends StatefulWidget {
-  const ScanScreen({Key key, this.animationController}) : super(key: key);
+  const ScanScreen({Key key, this.animationController, this.addClick})
+      : super(key: key);
 
   final AnimationController animationController;
+  final Function addClick;
   @override
   _ScanScreenState createState() => _ScanScreenState();
 }
@@ -54,31 +56,6 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
 
   void addAllListData() {
     const int count = 9;
-    /*
-    listViews.add(
-      TitleView(
-        titleTxt: 'Mediterranean diet',
-        subTxt: 'Details',
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
-    */
-
-    listViews.add(
-      TitleView(
-        titleTxt: 'Search Food',
-        //subTxt: '',
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 4, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
-    );
     listViews.add(
       SearchView(
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
@@ -101,12 +78,15 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
     );
     listViews.add(
       CameraView(
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: widget.animationController,
-            curve:
-                Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
-        animationController: widget.animationController,
-      ),
+          animation: Tween<double>(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(
+                  parent: widget.animationController,
+                  curve: Interval((1 / count) * 1, 1.0,
+                      curve: Curves.fastOutSlowIn))),
+          animationController: widget.animationController,
+          addClick: (String txt) {
+            widget.addClick(txt);
+          }),
     );
   }
 

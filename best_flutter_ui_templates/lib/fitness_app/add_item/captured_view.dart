@@ -2,11 +2,6 @@ import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:best_flutter_ui_templates/main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
-import 'dart:typed_data';
-
-import 'dart:io';
 import '../fintness_app_theme.dart';
 
 class CapturedView extends StatefulWidget {
@@ -58,16 +53,6 @@ class _CapturedViewState extends State<CapturedView> {
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      FutureBuilder<String>(
-                          future: _readFileByte(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<String> snapshot) {
-                            if (snapshot.hasData) {
-                              return Text(snapshot.data.toString());
-                            } else {
-                              return Container();
-                            }
-                          }),
                       Container(
                         height: 25,
                         width: 450,
@@ -132,7 +117,6 @@ class _CapturedViewState extends State<CapturedView> {
                   ),
                   Padding(
                     padding: EdgeInsets.all(10),
-                    /*
                     child: Container(
                       height: 150,
                       width: 300,
@@ -152,7 +136,6 @@ class _CapturedViewState extends State<CapturedView> {
                       ),
                       child: _previewImage(),
                     ),
-                    */
                   ),
                 ],
               ),
@@ -161,42 +144,5 @@ class _CapturedViewState extends State<CapturedView> {
         );
       },
     );
-  }
-
-  Future<String> _readFileByte() async {
-    if (widget.imageFile == null) return "File Null";
-/*
-    File file = File(widget.imageFile.path);
-    var bytes = file.readAsBytesSync();
-
-    var uri = Uri.parse("https://apinoidea.herokuapp.com/api/rawImage/");
-    var request = new http.Request("GET", uri)
-      ..headers['Content-Type'] = "application/octet-stream"
-      ..bodyBytes = bytes;
-
-    http.Response response =
-        await http.Response.fromStream(await request.send());
-    return response.statusCode.toString();
-  */
-
-    File file = File(widget.imageFile.path);
-
-    var request = http.MultipartRequest(
-      'GET',
-      Uri.parse("https://apinoidea.herokuapp.com/api/rawImage/"),
-    );
-    Map<String, String> headers = {"Content-Type": "application/octet-stream"};
-    request.files.add(
-      http.MultipartFile(
-        'file',
-        file.readAsBytes().asStream(),
-        file.lengthSync(),
-        filename: 'filename',
-        contentType: MediaType('image', 'jpeg'),
-      ),
-    );
-    request.headers.addAll(headers);
-    var res = await request.send();
-    return res.statusCode.toString();
   }
 }

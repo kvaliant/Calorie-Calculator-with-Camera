@@ -7,12 +7,17 @@ import 'package:flutter/material.dart';
 
 class ChooseScreen extends StatefulWidget {
   const ChooseScreen(
-      {Key key, this.animationController, this.imageFile, this.addClick})
+      {Key key,
+      this.animationController,
+      this.imageFile,
+      this.addClick,
+      this.suggestionString})
       : super(key: key);
 
   final Function addClick;
   final PickedFile imageFile;
   final AnimationController animationController;
+  final String suggestionString;
   @override
   _ChooseScreenState createState() => _ChooseScreenState();
 }
@@ -83,9 +88,6 @@ class _ChooseScreenState extends State<ChooseScreen>
     );
     listViews.add(
       InkWell(
-        /*onTap: () {
-          widget.addClick('Chicken Bolognise');
-        }, */
         child: SuggestionView(
           mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
               CurvedAnimation(
@@ -93,6 +95,7 @@ class _ChooseScreenState extends State<ChooseScreen>
                   curve: Interval((1 / count) * 1, 1.0,
                       curve: Curves.fastOutSlowIn))),
           mainScreenAnimationController: widget.animationController,
+          suggestionString: widget.suggestionString,
           addClick: (String txt) {
             widget.addClick(txt);
           },

@@ -44,5 +44,12 @@ class FoodsListData {
       servingSize: '1 Plate',
       restrictions: Restrictions(vegan: true, lactose: true),
     ),
+    FoodsListData(
+      foodID: 2,
+      foodName: 'Cheese',
+      calorie: 100,
+      servingSize: '1 Slice',
+      restrictions: Restrictions(vegan: true, lactose: true, hinduism: true),
+    ),
   ];
 }
