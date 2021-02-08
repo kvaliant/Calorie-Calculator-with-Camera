@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
 import 'package:best_flutter_ui_templates/fitness_app/models/tabIcon_data.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:best_flutter_ui_templates/main.dart';
 import 'package:flutter/material.dart';
 
@@ -187,7 +186,7 @@ class _BottomBarViewState extends State<BottomBarView>
                                         : currentMiddleButton ==
                                                 middleButtonEnum.retry
                                             ? Icon(
-                                                Icons.add,
+                                                Icons.replay,
                                                 color: FitnessAppTheme.white,
                                                 size: 32,
                                               )

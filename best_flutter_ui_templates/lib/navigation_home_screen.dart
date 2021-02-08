@@ -5,6 +5,7 @@ import 'package:best_flutter_ui_templates/custom_drawer/plan_screen.dart';
 import 'package:best_flutter_ui_templates/custom_drawer/restrictions_screen.dart';
 import 'package:best_flutter_ui_templates/custom_drawer/feedback_screen.dart';
 import 'package:best_flutter_ui_templates/custom_drawer/about_screen.dart';
+import 'package:best_flutter_ui_templates/custom_drawer/setting_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'fitness_app/fitness_app_home_screen.dart';
@@ -83,7 +84,7 @@ class _NavigationHomeScreenState extends State<NavigationHomeScreen> {
       }
       if (drawerIndexdata == DrawerIndex.Settings) {
         setState(() {
-          screenView = AboutScreen();
+          screenView = SettingScreen();
         });
       }
     }

@@ -213,7 +213,7 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        Navigator.of(context).push(ShowOverlay());
+                        Navigator.of(context).push(RestrictionOverlay());
                       },
                       child: Center(
                         child: Padding(
@@ -738,7 +738,7 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
                     onTap: () {
                       if (_currentServing != 0 && currentFood != null)
                         _saveAll();
-                      FocusScope.of(context).requestFocus(FocusNode());
+                      Navigator.of(context).push(SavedOverlay());
                     },
                     child: Center(
                       child: Padding(
@@ -849,7 +849,7 @@ class _NutritionDetailViewState extends State<NutritionDetailView> {
   }
 }
 
-class ShowOverlay extends ModalRoute<void> {
+class RestrictionOverlay extends ModalRoute<void> {
   @override
   Duration get transitionDuration => Duration(milliseconds: 500);
 
@@ -857,7 +857,7 @@ class ShowOverlay extends ModalRoute<void> {
   bool get opaque => false;
 
   @override
-  bool get barrierDismissible => false;
+  bool get barrierDismissible => true;
 
   @override
   Color get barrierColor => Colors.black.withOpacity(0.5);
@@ -870,7 +870,7 @@ class ShowOverlay extends ModalRoute<void> {
 
   final AnimationController animationController;
 
-  ShowOverlay({
+  RestrictionOverlay({
     Key key,
     this.animationController,
   });
@@ -893,7 +893,106 @@ class ShowOverlay extends ModalRoute<void> {
 
   Widget _buildOverlayContent(BuildContext context) {
     return Center(
-      child: RestrictionDetailView(foodData: currentFood),
+        child: Column(
+      children: <Widget>[
+        RestrictionDetailView(foodData: currentFood),
+        Text(
+          "Press the gray area to close",
+          style: TextStyle(
+            color: AppTheme.white,
+            fontSize: 16,
+            shadows: <Shadow>[
+              Shadow(
+                  color: FitnessAppTheme.white,
+                  offset: Offset(1, 1),
+                  blurRadius: 10.0),
+            ],
+          ),
+        ),
+      ],
+    ));
+  }
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
+    // You can add your own animations for the overlay content
+    return FadeTransition(
+      opacity: animation,
+      child: ScaleTransition(
+        scale: animation,
+        child: child,
+      ),
+    );
+  }
+}
+
+class SavedOverlay extends ModalRoute<void> {
+  @override
+  Duration get transitionDuration => Duration(milliseconds: 500);
+
+  @override
+  bool get opaque => false;
+
+  @override
+  bool get barrierDismissible => true;
+
+  @override
+  Color get barrierColor => Colors.black.withOpacity(0.5);
+
+  @override
+  String get barrierLabel => null;
+
+  @override
+  bool get maintainState => true;
+
+  SavedOverlay({
+    Key key,
+  });
+
+  @override
+  Widget buildPage(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
+    // This makes sure that text and other content follows the material style
+    return Material(
+      type: MaterialType.transparency,
+      // make sure that the overlay content is not cut off
+      child: SafeArea(
+        child: _buildOverlayContent(context),
+      ),
+    );
+  }
+
+  Widget _buildOverlayContent(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height - 100,
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Data Sucessfully Saved!',
+            style: TextStyle(
+              fontFamily: AppTheme.fontName,
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+              color: AppTheme.white,
+            ),
+          ),
+          Text(
+            'Press again to continue',
+            style: TextStyle(
+              fontFamily: AppTheme.fontName,
+              fontSize: 16,
+              fontWeight: FontWeight.w200,
+              color: AppTheme.white,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

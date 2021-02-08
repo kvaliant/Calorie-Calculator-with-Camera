@@ -397,7 +397,7 @@ class _CameraModuleState extends State<CameraModule> {
                 ],
               );
             } else {
-              return Container();
+              return CircularProgressIndicator();
             }
           });
     }

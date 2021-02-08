@@ -1,6 +1,5 @@
 import 'package:best_flutter_ui_templates/app_theme.dart';
 import 'package:best_flutter_ui_templates/fitness_app/fintness_app_theme.dart';
-import 'package:best_flutter_ui_templates/fitness_app/models/foods_list_data.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
@@ -104,6 +103,7 @@ class _SuggestionViewState extends State<SuggestionView>
   }
 
   void getSuggestionListData() {
+    /*
     var jsonString = widget.suggestionString.replaceFirst("200", "");
     var parsedJson = jsonDecode(jsonString);
     suggestionListData = [];
@@ -111,6 +111,25 @@ class _SuggestionViewState extends State<SuggestionView>
       if (parsedJson.toString().contains(element.foodName)) {
         suggestionListData.add(element.foodName);
       }
+    });
+    */
+    var jsonString = widget.suggestionString.replaceFirst("200", "");
+    var jsonData = jsonDecode(jsonString);
+    var predictionsStringList = jsonData['predictions'] as List;
+    //List<Predictions> predictionsList = <Predictions>[];
+    //suggestionListData = [predictionsStringList[1].toString()];
+    suggestionListData = [];
+    predictionsStringList.forEach((element) {
+      String jsonString2 = element.toString();
+      jsonString2 = jsonString2.replaceAll("probability: ", '"probability": "');
+      jsonString2 = jsonString2.replaceAll(", tagId: ", '", "tagId": "');
+      jsonString2 = jsonString2.replaceAll(", tagName: ", '", "tagName": "');
+      jsonString2 = jsonString2.replaceAll("}", '"}');
+      var jsonData2 = jsonDecode(jsonString2);
+      double probability = double.tryParse(jsonData2['probability']);
+      //String tagId = jsonData2['tagId'].toString();
+      String tagName = jsonData2['tagName'].toString();
+      if (probability > 0) suggestionListData.add(tagName.toString());
     });
   }
 }

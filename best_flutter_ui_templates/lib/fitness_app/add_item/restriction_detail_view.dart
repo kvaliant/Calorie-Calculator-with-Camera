@@ -116,7 +116,7 @@ class _RestrictionDetailViewState extends State<RestrictionDetailView> {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 25),
         child: Container(
-          height: 250,
+          height: 225,
           width: 450,
           decoration: BoxDecoration(
             color: AppTheme.nearlyWhite,
@@ -133,6 +133,7 @@ class _RestrictionDetailViewState extends State<RestrictionDetailView> {
             ],
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Container(
                 child: FutureBuilder<String>(
@@ -184,7 +185,7 @@ class _RestrictionDetailViewState extends State<RestrictionDetailView> {
               Container(
                 width: 450,
                 child: Padding(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.only(right: 8, left: 8, bottom: 8),
                   child: Text(
                     '*Different recipie might contain different ingredient',
                     textAlign: TextAlign.end,
