@@ -26,10 +26,9 @@ dependencies:
   shared_preferences: ^0.5.12+4
   image_picker: ^0.6.7+22
   image_crop: ^0.3.4
-  path_provider: ^0.4.1
+  path_provider: ^1.6.27
   http: ^0.12.2
   item_parser: ^0.0.1+1
-  #json_serializable: ^3.5.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -59,7 +58,6 @@ flutter:
     - assets/design_course/
     - assets/fitness_app/
     - assets/hotel/
-    - assets/food_history.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
