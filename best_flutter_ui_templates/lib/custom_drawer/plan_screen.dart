@@ -57,7 +57,9 @@ class _PlanScreenState extends State<PlanScreen> {
     _gender = currentGender == genderEnum.male ? 1 : 0;
     _unitType = currentUnitType == unitTypeEnum.Metric;
     _planRadio = currentSelectedPlan;
-    _planDailyCalorie = currentPlanDailyCalorie;
+    if (currentSelectedPlan == 4) {
+      _planDailyCalorie = currentPlanDailyCalorie;
+    }
     if (_age != null &&
         _height != null &&
         _weight != null &&

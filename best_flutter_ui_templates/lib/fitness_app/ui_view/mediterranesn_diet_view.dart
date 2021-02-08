@@ -132,7 +132,10 @@ class _MealsListViewState extends State<MediterranesnDietView>
                                             ),
                                           )
                                         : Text(
-                                            '${((_planDailyCalorie - _totalCalorie) * widget.mainScreenAnimation.value).toInt()}',
+                                            _planDailyCalorie == null ||
+                                                    _totalCalorie == null
+                                                ? "0"
+                                                : '${((_planDailyCalorie - _totalCalorie) * widget.mainScreenAnimation.value).toInt()}',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontFamily:
@@ -191,7 +194,9 @@ class _MealsListViewState extends State<MediterranesnDietView>
                                               padding: const EdgeInsets.only(
                                                   left: 4, bottom: 3),
                                               child: Text(
-                                                '${(_totalCalorie * widget.mainScreenAnimation.value).toInt()}',
+                                                _totalCalorie == null
+                                                    ? "0"
+                                                    : '${(_totalCalorie * widget.mainScreenAnimation.value).toInt()}',
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   fontFamily:
@@ -283,7 +288,8 @@ class _MealsListViewState extends State<MediterranesnDietView>
                                                 HexColor("#4c62dc"),
                                                 HexColor("#8A98E8")
                                               ],
-                                    angle: _planDailyCalorie == null
+                                    angle: _planDailyCalorie == null ||
+                                            _totalCalorie == null
                                         ? 360 +
                                             (360 - 360) *
                                                 (1.0 -

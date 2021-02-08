@@ -157,9 +157,12 @@ class _RestrictionsScreenState extends State<RestrictionsScreen> {
                                 : 'true';
                       });
                     },
-                    child: _restrictionsActiveList.elementAt(index) == 'true'
-                        ? Icon(Icons.check_box)
-                        : Icon(Icons.check_box_outline_blank),
+                    child: _restrictionsActiveList == null ||
+                            _restrictionsActiveList.length < index + 1
+                        ? Icon(Icons.check_box_outline_blank)
+                        : _restrictionsActiveList.elementAt(index) == 'true'
+                            ? Icon(Icons.check_box)
+                            : Icon(Icons.check_box_outline_blank),
                   ),
                   Text(restrictionsList.elementAt(index).restrictionsName),
                 ],
